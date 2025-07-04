@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 354c50a4146ac4549ae1c5fb50898013
+timeCreated: 1451378162
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/CSTemplates/ViewModelHandlerTemplate.txt
+  uploadId: 258224

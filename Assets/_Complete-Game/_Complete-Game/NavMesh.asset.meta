@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2c4a56f13213e4b4bb884ad176031854
+timeCreated: 1488324099
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/_Complete-Game/NavMesh.asset
+  uploadId: 283082

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ecb5505292659ad448cc9a62efa59feb
+timeCreated: 1490193524
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/Profiles/SurvivalShooterProfile.asset
+  uploadId: 283082

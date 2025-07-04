@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 8360fd2187b2ccf4e910cb292f55710e
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/Animation/PlayerAnimatorController.controller
+  uploadId: 283082

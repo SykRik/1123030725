@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 554142c641bb1dc4fa16878eb0148c58
+timeCreated: 1467777905
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Editor/ScriptableObjectUtility.cs
+  uploadId: 258224

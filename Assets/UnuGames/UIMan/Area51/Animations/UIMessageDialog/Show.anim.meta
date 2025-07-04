@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 99266a63f0ee8824db223d0ce9758a12
+timeCreated: 1450945890
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/Animations/UIMessageDialog/Show.anim
+  uploadId: 258224

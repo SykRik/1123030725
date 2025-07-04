@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5928175ff34494e439798bf4f7ed3596
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/_Complete-Game/LightingData.asset
+  uploadId: 283082

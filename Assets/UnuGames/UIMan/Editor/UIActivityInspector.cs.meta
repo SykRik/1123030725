@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 145066b242ba0df4ca8c04e048f43183
+timeCreated: 1489737945
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Editor/UIActivityInspector.cs
+  uploadId: 258224

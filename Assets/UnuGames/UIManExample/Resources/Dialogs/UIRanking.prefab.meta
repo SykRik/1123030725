@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3674909f97519b04b96f35151c2ce97b
+timeCreated: 1489254384
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Resources/Dialogs/UIRanking.prefab
+  uploadId: 258224

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dbc024dfd265a4000bb8f1271ca8c977
+timeCreated: 1459608271
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/Animations/UIMessageDialog/Idle.anim
+  uploadId: 258224

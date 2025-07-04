@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2d2172ef958c042e1a93b71a469443a8
+timeCreated: 1444489834
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Editor/ContextBrowser.cs
+  uploadId: 258224

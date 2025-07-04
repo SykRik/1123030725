@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: b34dc3b9aa5364a38b0b2a210daabd40
+timeCreated: 1459661500
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Binders/InputFieldBinder.cs
+  uploadId: 258224

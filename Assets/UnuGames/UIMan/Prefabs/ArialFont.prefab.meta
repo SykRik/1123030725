@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0e3ba63b5a8f2574e81547aa5bb33514
+timeCreated: 1476536560
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Prefabs/ArialFont.prefab
+  uploadId: 258224

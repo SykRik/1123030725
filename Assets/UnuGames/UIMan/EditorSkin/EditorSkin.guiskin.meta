@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 66690f67b2b2348adac297247fd91474
+timeCreated: 1443801797
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/EditorSkin/EditorSkin.guiskin
+  uploadId: 258224

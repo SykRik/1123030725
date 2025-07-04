@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: e75b00108c8d40041a73ce7ccb55e4d8
+timeCreated: 1459916509
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Core/IModule.cs
+  uploadId: 258224

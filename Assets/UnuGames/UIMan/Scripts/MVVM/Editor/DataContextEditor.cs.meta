@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: c9cccc8e6fd534220866713fdb076493
+timeCreated: 1442507475
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Editor/DataContextEditor.cs
+  uploadId: 258224

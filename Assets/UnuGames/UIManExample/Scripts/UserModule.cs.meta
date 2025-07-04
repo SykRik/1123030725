@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 14417fcb2703aee45b063b13224f0a3c
+timeCreated: 1489296874
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Scripts/UserModule.cs
+  uploadId: 258224

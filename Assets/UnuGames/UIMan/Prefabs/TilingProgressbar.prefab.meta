@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 09d286ecc2227444abbcbac1fd56905b
+timeCreated: 1459581319
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Prefabs/TilingProgressbar.prefab
+  uploadId: 258224

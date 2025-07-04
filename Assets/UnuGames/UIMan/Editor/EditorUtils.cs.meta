@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 4d9ae52055c3ae842b95aac865168dab
+timeCreated: 1450861275
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Editor/EditorUtils.cs
+  uploadId: 258224

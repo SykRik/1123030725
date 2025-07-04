@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: b95487fc2ce4b43498e93eb0cb2bb6d6
+timeCreated: 1450758647
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Editor/UIManRootInspector.cs
+  uploadId: 258224

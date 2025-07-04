@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 55ef05e9ea6937145b4ec6025a7c1db4
+timeCreated: 1489231043
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Animations/Button.controller
+  uploadId: 258224

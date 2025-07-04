@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 51d69eec56ce46242bc453485295ad3d
+timeCreated: 1450754946
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/UIs/UIBase/UIManDialog.cs
+  uploadId: 258224

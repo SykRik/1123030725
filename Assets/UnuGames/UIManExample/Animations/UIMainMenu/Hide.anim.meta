@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dbacbcd3cef60aa45814c146b8e3f4c5
+timeCreated: 1489233285
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Animations/UIMainMenu/Hide.anim
+  uploadId: 258224

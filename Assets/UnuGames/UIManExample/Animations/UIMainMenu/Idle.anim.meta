@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4f0553e537c321e468365b5cce8e1ca1
+timeCreated: 1489233286
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Animations/UIMainMenu/Idle.anim
+  uploadId: 258224

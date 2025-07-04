@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4224e274b47d0cc458a614548ac3e7c7
+timeCreated: 1489249919
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Resources/Screens/UIGameplay.prefab
+  uploadId: 258224

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: becb3a81232b84d97918f9b82bf832c4
+timeCreated: 1443534068
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/Utils/ReflectUtils.cs
+  uploadId: 258224

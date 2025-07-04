@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 21f4ad33121ed8c489feb6b6882c4086
+timeCreated: 1478614412
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Binders/BinberTemplate.cs
+  uploadId: 258224

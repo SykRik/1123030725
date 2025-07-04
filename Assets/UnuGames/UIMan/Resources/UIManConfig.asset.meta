@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 540d1795e7d756d48804d2848f343b19
+timeCreated: 1476613370
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Resources/UIManConfig.asset
+  uploadId: 258224

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 825aedce6359261449a88181f11f53a8
+timeCreated: 1489249875
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIManExample/Scripts/UIGameplay.cs
+  uploadId: 258224

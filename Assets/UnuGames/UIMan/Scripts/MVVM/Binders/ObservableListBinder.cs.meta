@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 28f9bea8fa249497f9ffbeddd38a8656
+timeCreated: 1459831028
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Binders/ObservableListBinder.cs
+  uploadId: 258224

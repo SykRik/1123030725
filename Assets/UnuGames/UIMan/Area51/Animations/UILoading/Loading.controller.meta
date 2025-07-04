@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8a15dc2b30e2ff14abe5fbed431b916a
+timeCreated: 1476975618
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/Animations/UILoading/Loading.controller
+  uploadId: 258224

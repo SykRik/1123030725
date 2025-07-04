@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1c185ce0fd713c44cb271527db17306a
+timeCreated: 1451359751
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/CSTemplates/TypeTemplate.txt
+  uploadId: 258224

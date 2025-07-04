@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eac7b04becdf4a6499b974873142f22b
+timeCreated: 1476975618
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Area51/Animations/UILoading/LoadingIndicator.anim
+  uploadId: 258224

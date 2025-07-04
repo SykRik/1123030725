@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: cb291a7ff53cef4458931f201e8a193f
+timeCreated: 1476625142
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/UIs/Custom/UIPopupDialog.Handler.cs
+  uploadId: 258224

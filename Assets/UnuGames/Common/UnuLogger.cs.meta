@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 48c1a031ff03b4b899382cac36229d17
+timeCreated: 1472479357
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/Common/UnuLogger.cs
+  uploadId: 258224

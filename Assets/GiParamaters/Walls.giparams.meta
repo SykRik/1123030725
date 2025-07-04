@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31dbc3e4ccfa51f4a8b2fbe80eb377d8
+timeCreated: 1461658674
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/GiParamaters/Walls.giparams
+  uploadId: 283082

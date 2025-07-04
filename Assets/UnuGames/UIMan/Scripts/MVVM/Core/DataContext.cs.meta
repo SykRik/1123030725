@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 54b2d07a41bd64beaa1e0321eb9806af
+timeCreated: 1442599678
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/MVVM/Core/DataContext.cs
+  uploadId: 258224

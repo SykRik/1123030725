@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d7bced140059b694e91f0e48210059c7
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 200
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/Scripts/Camera/CameraFollow.cs
+  uploadId: 283082

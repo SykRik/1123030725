@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 5af756c3e4f0dd448b853a07a135d9ee
+timeCreated: 1451010747
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81975
+  packageName: UIMan
+  packageVersion: 1.0.2
+  assetPath: Assets/UnuGames/UIMan/Scripts/UIs/Core/UIAnimationState.cs
+  uploadId: 258224
