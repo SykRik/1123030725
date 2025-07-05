@@ -3,9 +3,23 @@ using UnityEngine;
 
 namespace CompleteProject
 {
-	public class Enemy : MonoBehaviour
+	public interface IObjectID
 	{
+		int ID { get; }
+	}
+
+	public class Enemy : MonoBehaviour, IObjectID
+	{
+		public static int Count = 0;
+		
+		public int ID { get; private set; }
+
 		public event Action OnDeath;
+
+		private void Awake()
+		{
+			ID = ++Count;
+		}
 
 		public void ResetState()
 		{

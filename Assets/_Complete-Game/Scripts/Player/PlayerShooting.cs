@@ -7,25 +7,26 @@ namespace CompleteProject
 	{
 		#region ===== Serialized Fields =====
 
-		[SerializeField] private int   damagePerShot      = 20;
+		[SerializeField] private int damagePerShot = 20;
 		[SerializeField] private float timeBetweenBullets = 0.15f;
-		[SerializeField] private float range              = 100f;
+		[SerializeField] private float range = 100f;
+		[SerializeField] private float attackRange = 10f;
 
 		#endregion
 
 		#region ===== Private Fields =====
 
 		private float effectsDisplayTime = 0.2f;
-		private Ray   shootRay           = new Ray();
-		private int   shootableMask;
+		private Ray shootRay = new Ray();
+		private int shootableMask;
 
 		private ParticleSystem gunParticles;
-		private LineRenderer   gunLine;
-		private AudioSource    gunAudio;
-		private Light          gunLight;
-		private Light          faceLight;
+		private LineRenderer gunLine;
+		private AudioSource gunAudio;
+		private Light gunLight;
+		private Light faceLight;
 
-		private float     lastShotTime = -999f;
+		private float lastShotTime = -999f;
 		private Coroutine disableEffectRoutine;
 
 		#endregion
@@ -35,42 +36,31 @@ namespace CompleteProject
 		private void Awake()
 		{
 			shootableMask = LayerMask.GetMask("Shootable");
-			gunParticles  = GetComponent<ParticleSystem>();
-			gunLine       = GetComponent<LineRenderer>();
-			gunAudio      = GetComponent<AudioSource>();
-			gunLight      = GetComponent<Light>();
-			faceLight     = GetComponentInChildren<Light>();
+			gunParticles = GetComponent<ParticleSystem>();
+			gunLine = GetComponent<LineRenderer>();
+			gunAudio = GetComponent<AudioSource>();
+			gunLight = GetComponent<Light>();
+			faceLight = GetComponentInChildren<Light>();
 		}
 
-		private void OnEnable()
+		private void Update()
 		{
-			if (PlayerInputHandler.Instance != null)
-			{
-				PlayerInputHandler.Instance.OnFirePressed  += HandleFirePressed;
-				PlayerInputHandler.Instance.OnFireReleased += HandleFireReleased;
-			}
-		}
+			if (Time.timeScale <= 0f) return;
+			if (Time.time < lastShotTime + timeBetweenBullets) return;
 
-		private void OnDisable()
-		{
-			if (PlayerInputHandler.Instance != null)
+			if (HasEnemyInRange())
 			{
-				PlayerInputHandler.Instance.OnFirePressed  -= HandleFirePressed;
-				PlayerInputHandler.Instance.OnFireReleased -= HandleFireReleased;
+				Shoot();
 			}
 		}
 
 		#endregion
 
-		#region ===== Event Handlers =====
+		#region ===== Auto Fire Logic =====
 
-		private void HandleFirePressed()
+		private bool HasEnemyInRange()
 		{
-			Shoot();
-		}
-
-		private void HandleFireReleased()
-		{
+			return GameManager.Instance.EnemyManager.TryGetClosedEnemy(transform.position, attackRange, out _);
 		}
 
 		#endregion
@@ -79,32 +69,17 @@ namespace CompleteProject
 
 		private void Shoot()
 		{
-			if (Time.timeScale <= 0f)
-			{
-				Debug.LogWarning("[Shoot] Time.timeScale is 0 — game is paused.");
-				return;
-			}
-
-			if (Time.time < lastShotTime + timeBetweenBullets)
-			{
-				var timeRemaining = lastShotTime + timeBetweenBullets - Time.time;
-				Debug.LogWarning($"[Shoot] Waiting for fire cooldown. Ready in {timeRemaining:F2}s");
-				return;
-			}
-
 			lastShotTime = Time.time;
 
 			PlayMuzzleEffects();
 			PerformRaycast();
 			DisableEffects(timeBetweenBullets * effectsDisplayTime);
-
-			Debug.Log("[Shoot] Shot fired successfully.");
 		}
 
 		private void PlayMuzzleEffects()
 		{
 			if (gunAudio != null) gunAudio.Play();
-			if (gunLight != null) gunLight.enabled   = true;
+			if (gunLight != null) gunLight.enabled = true;
 			if (faceLight != null) faceLight.enabled = true;
 
 			if (gunParticles != null)
@@ -122,7 +97,7 @@ namespace CompleteProject
 
 		private void PerformRaycast()
 		{
-			shootRay.origin    = transform.position;
+			shootRay.origin = transform.position;
 			shootRay.direction = transform.forward;
 
 			if (Physics.Raycast(shootRay, out RaycastHit hitInfo, range, shootableMask))
@@ -147,11 +122,6 @@ namespace CompleteProject
 			if (hit.collider.TryGetComponent<EnemyHealth>(out var enemyHealth))
 			{
 				enemyHealth.TakeDamage(damagePerShot, hit.point);
-				Debug.Log($"[Shoot] Hit {enemyHealth.gameObject.name} at {hit.point} with {damagePerShot} damage.");
-			}
-			else
-			{
-				Debug.LogWarning($"[Shoot] Hit {hit.collider.name} but no EnemyHealth found.");
 			}
 		}
 
@@ -169,8 +139,8 @@ namespace CompleteProject
 
 		public void DisableEffects()
 		{
-			if (gunLine != null) gunLine.enabled     = false;
-			if (gunLight != null) gunLight.enabled   = false;
+			if (gunLine != null) gunLine.enabled = false;
+			if (gunLight != null) gunLight.enabled = false;
 			if (faceLight != null) faceLight.enabled = false;
 		}
 

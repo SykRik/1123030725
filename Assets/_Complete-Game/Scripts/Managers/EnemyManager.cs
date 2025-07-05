@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace CompleteProject
@@ -117,6 +117,29 @@ namespace CompleteProject
 				TypeOfEnemy.C => poolerC,
 				_             => null,
 			};
+		}
+
+		public bool TryGetClosedEnemy(Vector3 position, float range, out Enemy enemy)
+		{
+			if (TryGetEnemyClosed(poolerA, position, range, out enemy))
+				return true;
+			if (TryGetEnemyClosed(poolerB, position, range, out enemy))
+				return true;
+			if (TryGetEnemyClosed(poolerC, position, range, out enemy))
+				return true;
+			
+			enemy = null;
+			return false;
+		}
+
+		private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out Enemy enemy)
+		{
+			enemy = pooler.Enemies
+				.Where(x => x != null)
+				.Where(x => Vector3.Distance(x.transform.position, position) < range)
+				.OrderBy(x => Vector3.Distance(x.transform.position, position))
+				.FirstOrDefault();
+			return enemy != null;
 		}
 
 		#endregion

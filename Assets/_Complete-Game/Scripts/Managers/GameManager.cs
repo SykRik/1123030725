@@ -12,19 +12,52 @@ namespace CompleteProject
 
 	public class GameManager : MonoBehaviour
 	{
+		#region ===== Singleton =====
+
+		public static GameManager Instance { get; private set; }
+
+		private void Awake()
+		{
+			if (Instance != null && Instance != this)
+			{
+				Destroy(gameObject);
+				return;
+			}
+
+			Instance = this;
+		}
+
+		#endregion
+
+		#region ===== Serialized Fields =====
+
 		[Header("Game Config")]
 		[SerializeField] private float preGameDuration = 10f;
-		[SerializeField] private float gameDuration    = 180f;
+		[SerializeField] private float gameDuration = 180f;
 
 		[Header("References")]
 		[SerializeField] private PlayerHealth playerHealth;
 		[SerializeField] private EnemyManager enemyManager;
 
-		private GameState currentState  = GameState.Init;
-		private float     currentTime   = 0f;
-		private bool      isRunning     = false;
-		private int       lastCountdown = -1;
-		private bool      justEnteredState = false;
+		#endregion
+		
+		#region ===== Properties =====
+
+		public EnemyManager EnemyManager => enemyManager;
+		
+		#endregion
+
+		#region ===== Private Fields =====
+
+		private GameState currentState = GameState.Init;
+		private float currentTime = 0f;
+		private bool isRunning = false;
+		private int lastCountdown = -1;
+		private bool justEnteredState = false;
+
+		#endregion
+
+		#region ===== Unity Methods =====
 
 		private void Start()
 		{
@@ -54,6 +87,10 @@ namespace CompleteProject
 					break;
 			}
 		}
+
+		#endregion
+
+		#region ===== State Logic =====
 
 		private void UpdatePreGame()
 		{
@@ -101,7 +138,7 @@ namespace CompleteProject
 			currentState = newState;
 			EnterState(newState, isWin, reason);
 
-			justEnteredState = true; // ✅ skip logic 1 frame
+			justEnteredState = true;
 		}
 
 		private void EnterState(GameState state, bool isWin = false, string reason = "")
@@ -110,9 +147,9 @@ namespace CompleteProject
 			{
 				case GameState.PreGame:
 					Debug.Log("[GameManager] PreGame started. Prepare yourself...");
-					currentTime   = preGameDuration;
+					currentTime = preGameDuration;
 					lastCountdown = -1;
-					isRunning     = true;
+					isRunning = true;
 					break;
 
 				case GameState.Playing:
@@ -133,5 +170,7 @@ namespace CompleteProject
 		{
 			// Reserved for fade out, reset, etc.
 		}
+
+		#endregion
 	}
 }
