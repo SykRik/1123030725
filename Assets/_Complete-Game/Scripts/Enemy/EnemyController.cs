@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace HVM
 {
@@ -17,15 +18,14 @@ namespace HVM
 
         public event Action OnDeath;
 
-        [Header("Health")]
-        [SerializeField] private int startingHealth = 100;
+        [Header("Health")] [SerializeField] private int startingHealth = 100;
         [SerializeField] private float sinkSpeed = 2.5f;
         [SerializeField] private int scoreValue = 10;
         [SerializeField] private AudioClip deathClip;
 
-        [Header("Attack")]
-        [SerializeField] private float timeBetweenAttacks = 0.5f;
+        [Header("Attack")] [SerializeField] private float timeBetweenAttacks = 0.5f;
         [SerializeField] private int attackDamage = 10;
+        [SerializeField] private Transform hitPoint = null;
 
         private int currentHealth;
         private float attackTimer;
@@ -35,13 +35,17 @@ namespace HVM
 
         private Animator animator;
         private AudioSource audioSource;
+        [SerializeField] 
         private ParticleSystem hitParticles;
         private CapsuleCollider capsuleCollider;
         private Rigidbody rb;
         private NavMeshAgent agent;
 
         private Transform player;
-        private PlayerHealth playerHealth;
+        private PlayerController playerController;
+
+
+        public int CurrentHealth => currentHealth;
 
         private void Awake()
         {
@@ -59,7 +63,7 @@ namespace HVM
             if (playerObj)
             {
                 player = playerObj.transform;
-                playerHealth = playerObj.GetComponent<PlayerHealth>();
+                playerController = playerObj.GetComponent<PlayerController>();
             }
 
             currentHealth = startingHealth;
@@ -80,7 +84,7 @@ namespace HVM
         private void Update()
         {
             // === Movement ===
-            if (!isDead && playerHealth != null && playerHealth.CurrentHealth > 0)
+            if (!isDead && playerController != null && playerController.CurrentHealth > 0)
             {
                 if (!agent.enabled) agent.enabled = true;
                 agent.SetDestination(player.position);
@@ -98,7 +102,7 @@ namespace HVM
                 Attack();
             }
 
-            if (playerHealth != null && playerHealth.CurrentHealth <= 0)
+            if (playerController != null && playerController.CurrentHealth <= 0)
             {
                 animator.SetTrigger("PlayerDead");
             }
@@ -114,9 +118,9 @@ namespace HVM
         {
             attackTimer = 0f;
 
-            if (playerHealth.CurrentHealth > 0)
+            if (playerController.CurrentHealth > 0)
             {
-                playerHealth.TakeDamage(attackDamage);
+                playerController.TakeDamage(attackDamage);
             }
         }
 
@@ -130,7 +134,7 @@ namespace HVM
 
             if (hitParticles != null)
             {
-                hitParticles.transform.position = hitPoint;
+                // hitParticles.transform.position = hitPoint;
                 hitParticles.Play();
             }
 
@@ -154,6 +158,8 @@ namespace HVM
             }
 
             OnDeath?.Invoke();
+            EnemyManager.Instance.RegisterEnemyDeath();
+
         }
 
         public void StartSinking()

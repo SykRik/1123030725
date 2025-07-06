@@ -84,7 +84,7 @@ namespace HVM
 
 		private EnemyController FindTargetEnemyInRange()
 		{
-			return GameManager.Instance.EnemyManager.TryGetClosedEnemy(transform.position, attackRange, out var enemy) ? enemy : null;
+			return EnemyManager.Instance.TryGetClosedEnemy(transform.position, attackRange, out var enemy) ? enemy : null;
 		}
 
 		#endregion

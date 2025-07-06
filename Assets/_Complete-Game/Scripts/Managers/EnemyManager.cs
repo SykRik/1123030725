@@ -3,145 +3,168 @@ using UnityEngine;
 
 namespace HVM
 {
-	[RequireComponent(typeof(EnemySpawner))]
-	[RequireComponent(typeof(EnemyTracking))]
-	public class EnemyManager : MonoBehaviour
-	{
-		public enum TypeOfEnemy
-		{
-			A,
-			B,
-			C,
-			Undefine
-		}
+    [RequireComponent(typeof(EnemySpawner))]
+    [RequireComponent(typeof(EnemyTracking))]
+    public class EnemyManager : MonoSingleton<EnemyManager>
+    {
+        #region ===== Enum =====
 
-		[Header("Game References")]
-		[SerializeField] private PlayerHealth playerHealth;
+        public enum TypeOfEnemy
+        {
+            A,
+            B,
+            C,
+            Undefine
+        }
 
-		[Header("Spawning Settings")]
-		[SerializeField] private float spawnInterval = 3f;
+        #endregion
 
-		[Header("Enemy Poolers (By Type)")]
-		[SerializeField] private EnemyPooler poolerA;
-		[SerializeField] private EnemyPooler poolerB;
-		[SerializeField] private EnemyPooler poolerC;
+        #region ===== Serialized Fields =====
 
-		[Header("Internal References")]
-		[SerializeField] private EnemySpawner  spawner;
-		[SerializeField] private EnemyTracking tracker;
+        [Header("Game References")]
+        [SerializeField] private PlayerController playerController;
 
-		private float spawnTimer = 0f;
-		private bool  isRunning  = false;
+        [Header("Spawning Settings")]
+        [SerializeField] private float spawnInterval = 3f;
 
-		#region Unity Methods
+        [Header("Enemy Poolers (By Type)")]
+        [SerializeField] private EnemyPooler poolerA;
+        [SerializeField] private EnemyPooler poolerB;
+        [SerializeField] private EnemyPooler poolerC;
 
-		private void OnValidate()
-		{
-			spawner = GetComponent<EnemySpawner>();
-			tracker = GetComponent<EnemyTracking>();
+        [Header("Internal References")]
+        [SerializeField] private EnemySpawner spawner;
+        [SerializeField] private EnemyTracking tracker;
+
+        #endregion
+
+        #region ===== Runtime Fields =====
+
+        private float spawnTimer = 0f;
+        private bool isRunning = false;
+
+        #endregion
+
+        #region ===== Properties =====
+
+        public int TotalEnemiesKilled { get; private set; }
+
+        #endregion
+
+        #region ===== Unity Methods =====
+
+        private void OnValidate()
+        {
+            spawner = GetComponent<EnemySpawner>();
+            tracker = GetComponent<EnemyTracking>();
 
 #if UNITY_EDITOR
-			if (spawner == null || tracker == null)
-				Debug.LogError("[EnemyManager] Missing required internal references.", this);
+            if (spawner == null || tracker == null)
+                Debug.LogError("[EnemyManager] Missing required internal references.", this);
 #endif
-		}
+        }
 
-		private void Update()
-		{
-			if (!isRunning || playerHealth.CurrentHealth <= 0f)
-				return;
+        private void Update()
+        {
+            if (!isRunning || playerController.CurrentHealth <= 0f)
+                return;
 
-			spawnTimer -= Time.deltaTime;
+            spawnTimer -= Time.deltaTime;
 
-			if (spawnTimer <= 0f)
-			{
-				spawnTimer = spawnInterval;
-				SpawnEnemy(TypeOfEnemy.A); // 🔁 Future: support more types
-			}
-		}
+            if (spawnTimer <= 0f)
+            {
+                spawnTimer = spawnInterval;
+                SpawnEnemy(TypeOfEnemy.A); // 🔁 Future: support more types
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Public Methods
+        #region ===== Public Methods =====
 
-		public void StartSpawning()
-		{
-			isRunning  = true;
-			spawnTimer = spawnInterval;
-			Debug.Log("[EnemyManager] Spawning started.");
-		}
+        public void StartSpawning()
+        {
+            isRunning = true;
+            spawnTimer = spawnInterval;
+            Debug.Log("[EnemyManager] Spawning started.");
+        }
 
-		public void StopSpawning()
-		{
-			isRunning = false;
-			Debug.Log("[EnemyManager] Spawning stopped.");
-		}
+        public void StopSpawning()
+        {
+            isRunning = false;
+            Debug.Log("[EnemyManager] Spawning stopped.");
+        }
 
-		public bool AreAllEnemiesDefeated()
-		{
-			return tracker.AllEnemiesDefeated;
-		}
+        public bool AreAllEnemiesDefeated()
+        {
+            return tracker.AllEnemiesDefeated;
+        }
 
-		#endregion
+        public bool TryGetClosedEnemy(Vector3 position, float range, out EnemyController enemyController)
+        {
+            if (TryGetEnemyClosed(poolerA, position, range, out enemyController))
+                return true;
+            if (TryGetEnemyClosed(poolerB, position, range, out enemyController))
+                return true;
+            if (TryGetEnemyClosed(poolerC, position, range, out enemyController))
+                return true;
 
-		#region Private Methods
+            enemyController = null;
+            return false;
+        }
 
-		private void SpawnEnemy(TypeOfEnemy type)
-		{
-			var pooler = GetPooler(type);
+        public void RegisterEnemyDeath()
+        {
+            TotalEnemiesKilled++;
+        }
 
-			if (pooler == null)
-			{
-				Debug.LogWarning($"[EnemyManager] No pooler assigned for type: {type}");
-				return;
-			}
+        #endregion
 
-			if (!pooler.TryRequest(out var enemy))
-			{
-				Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
-				return;
-			}
+        #region ===== Private Methods =====
 
-			spawner.Spawn(enemy);
-			tracker.RegisterEnemy(enemy);
+        private void SpawnEnemy(TypeOfEnemy type)
+        {
+            var pooler = GetPooler(type);
 
-			Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
-		}
+            if (pooler == null)
+            {
+                Debug.LogWarning($"[EnemyManager] No pooler assigned for type: {type}");
+                return;
+            }
 
-		private EnemyPooler GetPooler(TypeOfEnemy type)
-		{
-			return type switch
-			{
-				TypeOfEnemy.A => poolerA,
-				TypeOfEnemy.B => poolerB,
-				TypeOfEnemy.C => poolerC,
-				_             => null,
-			};
-		}
+            if (!pooler.TryRequest(out var enemy))
+            {
+                Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
+                return;
+            }
 
-		public bool TryGetClosedEnemy(Vector3 position, float range, out EnemyController enemyController)
-		{
-			if (TryGetEnemyClosed(poolerA, position, range, out enemyController))
-				return true;
-			if (TryGetEnemyClosed(poolerB, position, range, out enemyController))
-				return true;
-			if (TryGetEnemyClosed(poolerC, position, range, out enemyController))
-				return true;
-			
-			enemyController = null;
-			return false;
-		}
+            spawner.Spawn(enemy);
+            tracker.RegisterEnemy(enemy);
 
-		private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
-		{
-			enemyController = pooler.Enemies
-				.Where(x => x != null)
-				.Where(x => Vector3.Distance(x.transform.position, position) < range)
-				.OrderBy(x => Vector3.Distance(x.transform.position, position))
-				.FirstOrDefault();
-			return enemyController != null;
-		}
+            Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
+        }
 
-		#endregion
-	}
+        private EnemyPooler GetPooler(TypeOfEnemy type)
+        {
+            return type switch
+            {
+                TypeOfEnemy.A => poolerA,
+                TypeOfEnemy.B => poolerB,
+                TypeOfEnemy.C => poolerC,
+                _ => null,
+            };
+        }
+
+        private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
+        {
+            enemyController = pooler.Enemies
+                .Where(x => x != null && x.CurrentHealth > 0 && Vector3.Distance(x.transform.position, position) < range)
+                .OrderBy(x => Vector3.Distance(x.transform.position, position))
+                .FirstOrDefault();
+
+            return enemyController != null;
+        }
+
+        #endregion
+    }
 }

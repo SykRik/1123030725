@@ -10,44 +10,21 @@ namespace HVM
 		GameOver
 	}
 
-	public class GameManager : MonoBehaviour
+	public class GameManager : MonoSingleton<GameManager>
 	{
-		#region ===== Singleton =====
-
-		public static GameManager Instance { get; private set; }
-
-		private void Awake()
-		{
-			if (Instance != null && Instance != this)
-			{
-				Destroy(gameObject);
-				return;
-			}
-
-			Instance = this;
-		}
-
-		#endregion
-
 		#region ===== Serialized Fields =====
 
 		[Header("Game Config")]
 		[SerializeField] private float preGameDuration = 10f;
 		[SerializeField] private float gameDuration = 180f;
+		[SerializeField] private int winKillTarget = 50;
 
 		[Header("References")]
-		[SerializeField] private PlayerHealth playerHealth;
-		[SerializeField] private EnemyManager enemyManager;
+		[SerializeField] private PlayerController playerController;
 
 		#endregion
-		
-		#region ===== Properties =====
 
-		public EnemyManager EnemyManager => enemyManager;
-		
-		#endregion
-
-		#region ===== Private Fields =====
+		#region ===== Runtime Fields =====
 
 		private GameState currentState = GameState.Init;
 		private float currentTime = 0f;
@@ -92,44 +69,6 @@ namespace HVM
 
 		#region ===== State Logic =====
 
-		private void UpdatePreGame()
-		{
-			if (currentTime <= 3f)
-			{
-				int countdown = Mathf.CeilToInt(currentTime);
-				if (countdown != lastCountdown && countdown > 0)
-				{
-					lastCountdown = countdown;
-					Debug.Log($"[GameManager] Starting in: {countdown}");
-				}
-			}
-
-			if (currentTime <= 0f)
-			{
-				ChangeState(GameState.Playing);
-			}
-		}
-
-		private void UpdatePlaying()
-		{
-			if (playerHealth.CurrentHealth <= 0)
-			{
-				ChangeState(GameState.GameOver, false, "Player Died");
-				return;
-			}
-
-			if (currentTime <= 0)
-			{
-				ChangeState(GameState.GameOver, false, "Time Expired");
-				return;
-			}
-
-			// if (enemyManager.AreAllEnemiesDefeated())
-			// {
-			// 	ChangeState(GameState.GameOver, true, "All Enemies Defeated");
-			// }
-		}
-
 		private void ChangeState(GameState newState, bool isWin = false, string reason = "")
 		{
 			if (currentState == newState) return;
@@ -155,13 +94,13 @@ namespace HVM
 				case GameState.Playing:
 					Debug.Log("[GameManager] Game Started!");
 					currentTime = gameDuration;
-					enemyManager.StartSpawning();
+					EnemyManager.Instance.StartSpawning();
 					break;
 
 				case GameState.GameOver:
 					Debug.Log($"[GameManager] Game Over - {(isWin ? "Victory" : "Defeat")} - {reason}");
 					isRunning = false;
-					enemyManager.StopSpawning();
+					EnemyManager.Instance.StopSpawning();
 					break;
 			}
 		}
@@ -169,6 +108,44 @@ namespace HVM
 		private void ExitState(GameState state)
 		{
 			// Reserved for fade out, reset, etc.
+		}
+
+		private void UpdatePreGame()
+		{
+			if (currentTime <= 3f)
+			{
+				int countdown = Mathf.CeilToInt(currentTime);
+				if (countdown != lastCountdown && countdown > 0)
+				{
+					lastCountdown = countdown;
+					Debug.Log($"[GameManager] Starting in: {countdown}");
+				}
+			}
+
+			if (currentTime <= 0f)
+			{
+				ChangeState(GameState.Playing);
+			}
+		}
+
+		private void UpdatePlaying()
+		{
+			if (playerController.CurrentHealth <= 0)
+			{
+				ChangeState(GameState.GameOver, false, "Player Died");
+				return;
+			}
+
+			if (currentTime <= 0)
+			{
+				ChangeState(GameState.GameOver, false, "Time Expired");
+				return;
+			}
+
+			if (EnemyManager.Instance.TotalEnemiesKilled >= winKillTarget)
+			{
+				ChangeState(GameState.GameOver, true, $"Kill Target Reached: {winKillTarget}");
+			}
 		}
 
 		#endregion

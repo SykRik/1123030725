@@ -60,7 +60,7 @@ namespace HVM
 
 		private bool HasEnemyInRange()
 		{
-			return GameManager.Instance.EnemyManager.TryGetClosedEnemy(transform.position, attackRange, out _);
+			return EnemyManager.Instance.TryGetClosedEnemy(transform.position, attackRange, out _);
 		}
 
 		#endregion

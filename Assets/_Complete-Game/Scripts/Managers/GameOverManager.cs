@@ -4,10 +4,10 @@ namespace HVM
 {
 	public class GameOverManager : MonoBehaviour
 	{
-		public PlayerHealth playerHealth; // Reference to the player's health.
+		public PlayerController playerController = null; // Reference to the player's health.
 
 
-		Animator anim; // Reference to the animator component.
+		private Animator anim; // Reference to the animator component.
 
 
 		void Awake()
@@ -20,7 +20,7 @@ namespace HVM
 		void Update()
 		{
 			// If the player has run out of health...
-			if (playerHealth.CurrentHealth <= 0)
+			if (playerController.CurrentHealth <= 0)
 			{
 				// ... tell the animator the game is over.
 				anim.SetTrigger("GameOver");
