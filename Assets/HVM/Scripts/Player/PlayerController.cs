@@ -51,12 +51,12 @@ namespace HVM
 
         [Header("Shooting")]
         [SerializeField] private int damagePerShot = 20;
-        [SerializeField] private float timeBetweenBullets = 0.3f;
+        [SerializeField] private float timeBetweenBullets = 0.15f;
         [SerializeField] private float shotRange = 100f;
         [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
         [SerializeField] private float shotgunAngle = 60f;
         [SerializeField] private float shotgunRadius = 6f;
-        [SerializeField] private float knockbackForce = 10f;
+        [SerializeField] private float knockbackForce = 5f;
         [SerializeField] private int shotgunRayCount = 5;
 
         [Header("Shooting FX")]
@@ -269,7 +269,7 @@ namespace HVM
 
                     if (angle <= shotgunAngle / 2f)
                     {
-                        enemy.TakeDamage(damagePerShot, enemy.transform.position, knockbackForce);
+                        enemy.TakeDamage(damagePerShot, transform.position, knockbackForce);
                     }
                 }
             }

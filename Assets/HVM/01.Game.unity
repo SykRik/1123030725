@@ -5010,6 +5010,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5400000, guid: 4e5a0d387dc27394b81600988ad0216f, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400000, guid: 4e5a0d387dc27394b81600988ad0216f, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 10800002, guid: 4e5a0d387dc27394b81600988ad0216f, type: 3}
       propertyPath: m_BounceIntensity
       value: 0.5

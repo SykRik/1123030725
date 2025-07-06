@@ -9974,6 +9974,7 @@ GameObject:
   - component: {fileID: 9583922}
   - component: {fileID: 5499234}
   - component: {fileID: 8279214}
+  - component: {fileID: 19546556}
   - component: {fileID: 13536644}
   - component: {fileID: 13644992}
   - component: {fileID: 6348949121281377397}
@@ -10151,6 +10152,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!195 &19546556
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153412}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.2
+  m_Speed: 2
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!135 &13536644
 SphereCollider:
   m_ObjectHideFlags: 0
