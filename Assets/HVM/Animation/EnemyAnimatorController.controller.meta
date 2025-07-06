@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 2cd6bf77cac24414c8e134b0c0e7aed3
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/Animation/EnemyAnimatorController.controller
+  uploadId: 283082

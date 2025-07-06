@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 548c56f4bcf4db24b8aa057e9846a005
+timeCreated: 1435666607
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 40756
+  packageName: Survival Shooter Tutorial
+  packageVersion: 2.6
+  assetPath: Assets/_Complete-Game/Prefabs/Hellephant.prefab
+  uploadId: 283082
