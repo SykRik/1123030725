@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 11400000}
   - component: {fileID: 8200000}
   - component: {fileID: 11400006}
-  - component: {fileID: -3955193672548797167}
+  - component: {fileID: 8005849467337320346}
   m_Layer: 7
   m_Name: ZomBunny
   m_TagString: Untagged
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f58c1d9ce56e1749830b8aebe8ba3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-3955193672548797167
+--- !u!114 &8005849467337320346
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

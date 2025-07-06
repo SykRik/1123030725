@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class EnemyAttack : MonoBehaviour
 	{

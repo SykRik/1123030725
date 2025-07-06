@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class PlayerShooting : MonoBehaviour
 	{

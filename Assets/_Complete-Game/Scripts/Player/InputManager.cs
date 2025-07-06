@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
-using Terresquall;
 
 public class InputManager : MonoBehaviour, PlayerInput.IGameplayActions
 {
@@ -23,7 +22,7 @@ public class InputManager : MonoBehaviour, PlayerInput.IGameplayActions
 	private PlayerInput input;
 	
 	[SerializeField]
-	private VirtualJoystick joystick = null;
+	private Joystick joystick = null;
 
 	private Vector2 VerifyMoveInput()
 	{
@@ -49,12 +48,9 @@ public class InputManager : MonoBehaviour, PlayerInput.IGameplayActions
 		input.Gameplay.Enable();
 	}
 
-	private void Update()
+	public void UpdateJoystick(Vector2 direction)
 	{
-		if (joystick != null)
-		{
-			moveJS = joystick.GetAxis();
-		}
+		moveJS = direction;
 	}
 
 	private void OnDisable()

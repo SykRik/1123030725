@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace CompleteProject
+namespace HVM
 {
     public class ScoreManager : MonoBehaviour
     {

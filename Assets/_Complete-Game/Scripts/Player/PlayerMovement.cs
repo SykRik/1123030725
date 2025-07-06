@@ -1,9 +1,6 @@
-﻿using System;
-using UnityEngine;
-using System.Linq;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class PlayerMovement : MonoBehaviour
 	{
@@ -54,28 +51,30 @@ namespace CompleteProject
 			}
 			else if (moveInput.sqrMagnitude > 0.01f)
 			{
-				var direction = new Vector3(moveInput.x, 0f, moveInput.y);
+				var direction = moveInput.ToVector3XZ();
 				RotateTowards(direction);
 			}
 		}
 
-		private void RotateTowards(Vector3 direction)
+		private void RotateTowards(Vector3 input)
 		{
-			var targetRot = Quaternion.LookRotation(Vector3.Normalize(new Vector3(direction.x, 0f, direction.z)));
+			var direction = input.ToVector3XZ();
+			var targetRot = Quaternion.LookRotation(direction);
+			
 			playerRB.MoveRotation(targetRot);
 		}
 
 		private void MovePlayer()
 		{
-			Vector3 moveDir = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-			Vector3 newPos = transform.position + moveDir * speed * Time.fixedDeltaTime;
+			var direction = moveInput.ToVector3XZ().normalized;
+			var position = transform.position + direction * speed * Time.fixedDeltaTime;
 
-			playerRB.MovePosition(newPos);
+			playerRB.MovePosition(position);
 		}
 
 		private void UpdateAnimation()
 		{
-			bool isWalking = moveInput.sqrMagnitude > 0.01f;
+			var isWalking = moveInput.sqrMagnitude > 0.01f;
 			animator.SetBool("IsWalking", isWalking);
 		}
 
@@ -83,7 +82,7 @@ namespace CompleteProject
 
 		#region ===== Target Selection =====
 
-		private Enemy FindTargetEnemyInRange()
+		private EnemyController FindTargetEnemyInRange()
 		{
 			return GameManager.Instance.EnemyManager.TryGetClosedEnemy(transform.position, attackRange, out var enemy) ? enemy : null;
 		}

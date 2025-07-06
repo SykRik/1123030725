@@ -1,32 +1,32 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class EnemyTracking : MonoBehaviour
 	{
-		private readonly HashSet<Enemy> activeEnemies = new();
+		private readonly HashSet<EnemyController> activeEnemies = new();
 
 		public bool AllEnemiesDefeated => activeEnemies.Count == 0;
 
-		public void RegisterEnemy(Enemy enemy)
+		public void RegisterEnemy(EnemyController enemyController)
 		{
-			if (enemy == null)
+			if (enemyController == null)
 				return;
-			if (activeEnemies.Contains(enemy))
+			if (activeEnemies.Contains(enemyController))
 				return;
 
-			activeEnemies.Add(enemy);
+			activeEnemies.Add(enemyController);
 
-			if (enemy.TryGetComponent(out Enemy enemyComp))
+			if (enemyController.TryGetComponent(out EnemyController enemyComp))
 			{
-				enemyComp.OnDeath += () => UnregisterEnemy(enemy);
+				enemyComp.OnDeath += () => UnregisterEnemy(enemyController);
 			}
 		}
 
-		private void UnregisterEnemy(Enemy enemy)
+		private void UnregisterEnemy(EnemyController enemyController)
 		{
-			activeEnemies.Remove(enemy);
+			activeEnemies.Remove(enemyController);
 		}
 	}
 }

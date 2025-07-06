@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class EnemySpawner : MonoBehaviour
 	{
 		[SerializeField] private Transform[] spawnPoints;
 
-		public void Spawn(Enemy enemy)
+		public void Spawn(EnemyController enemyController)
 		{
 			var index = Random.Range(0, spawnPoints.Length);
 			var point = spawnPoints[index];
 
-			enemy.transform.SetPositionAndRotation(point.position, point.rotation);
+			enemyController.transform.SetPositionAndRotation(point.position, point.rotation);
 
-			if (enemy.TryGetComponent(out Enemy enemyComp))
+			if (enemyController.TryGetComponent(out EnemyController enemyComp))
 			{
 				enemyComp.ResetState();
 			}

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace CompleteProject
+namespace HVM
 {
-	public class EnemyPooler : BasePooler<Enemy>
+	public class EnemyPooler : BasePooler<EnemyController>
 	{
-		public List<Enemy> Enemies => liveItems;
+		public List<EnemyController> Enemies => liveItems;
 	}
 }

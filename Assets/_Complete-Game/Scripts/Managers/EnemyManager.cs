@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	[RequireComponent(typeof(EnemySpawner))]
 	[RequireComponent(typeof(EnemyTracking))]
@@ -96,7 +96,7 @@ namespace CompleteProject
 				return;
 			}
 
-			if (!pooler.TryGetEnemy(out var enemy))
+			if (!pooler.TryRequest(out var enemy))
 			{
 				Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
 				return;
@@ -119,27 +119,27 @@ namespace CompleteProject
 			};
 		}
 
-		public bool TryGetClosedEnemy(Vector3 position, float range, out Enemy enemy)
+		public bool TryGetClosedEnemy(Vector3 position, float range, out EnemyController enemyController)
 		{
-			if (TryGetEnemyClosed(poolerA, position, range, out enemy))
+			if (TryGetEnemyClosed(poolerA, position, range, out enemyController))
 				return true;
-			if (TryGetEnemyClosed(poolerB, position, range, out enemy))
+			if (TryGetEnemyClosed(poolerB, position, range, out enemyController))
 				return true;
-			if (TryGetEnemyClosed(poolerC, position, range, out enemy))
+			if (TryGetEnemyClosed(poolerC, position, range, out enemyController))
 				return true;
 			
-			enemy = null;
+			enemyController = null;
 			return false;
 		}
 
-		private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out Enemy enemy)
+		private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
 		{
-			enemy = pooler.Enemies
+			enemyController = pooler.Enemies
 				.Where(x => x != null)
 				.Where(x => Vector3.Distance(x.transform.position, position) < range)
 				.OrderBy(x => Vector3.Distance(x.transform.position, position))
 				.FirstOrDefault();
-			return enemy != null;
+			return enemyController != null;
 		}
 
 		#endregion

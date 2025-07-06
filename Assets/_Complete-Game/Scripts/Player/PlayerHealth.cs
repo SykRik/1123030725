@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-namespace CompleteProject
+namespace HVM
 {
 	public class PlayerHealth : MonoBehaviour
 	{

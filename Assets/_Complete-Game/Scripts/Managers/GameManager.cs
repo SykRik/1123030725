@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CompleteProject
+namespace HVM
 {
 	public enum GameState
 	{

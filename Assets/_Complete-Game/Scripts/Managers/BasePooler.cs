@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using List = NUnit.Framework.List;
 
-namespace CompleteProject
+namespace HVM
 {
     public class BasePooler<T> : MonoBehaviour where T : Component, IObjectID
     {
@@ -17,69 +15,74 @@ namespace CompleteProject
 
         private void Awake()
         {
-            InitializePool();
+            Initialize();
         }
 
-        public bool TryGetEnemy(out T enemy)
+        public bool TryRequest(out T item)
         {
-            if (idleItems.Count > 0 || IncreaseEnemies(10))
+            if (idleItems.Count > 0 || Expand(10))
             {
-                enemy = idleItems.Dequeue();
-                enemy.transform.SetParent(liveContainer, false);
-                liveItems.Add(enemy);
+                item = idleItems.Dequeue();
+                item.transform.SetParent(liveContainer, false);
+                OnRequest(item);
+                liveItems.Add(item);
             }
             else
             {
-                enemy = null;
-                Debug.LogWarning("[EnemyPooler] Failed to expand pool.");
+                item = null;
+                Debug.LogWarning("[Pooler] Failed to expand pool.");
             }
 
-            return enemy != null;
+            return item != null;
         }
 
-        public T GetEnemy()
+        public T Request()
         {
-            return TryGetEnemy(out var enemy) ? enemy : null;
+            return TryRequest(out var item) ? item : null;
         }
 
-        public void ReturnEnemy(T enemy)
+        public void Return(T item)
         {
-            if (enemy == null)
-                return;
-            if (liveItems.Contains(enemy))
+            if (item == null || !liveItems.Contains(item))
                 return;
 
-            enemy.transform.SetParent(idleContainer, false);
-            idleItems.Enqueue(enemy);
-            liveItems.Remove(enemy);
-        }
-
-        private void InitializePool()
-        {
-            IncreaseEnemies(initialSize);
-        }
-
-        private bool IncreaseEnemies(int amount)
-        {
-            for (var i = 0; i < amount; i++)
-            {
-                var enemy = Instantiate(prefab, idleContainer);
-                enemy.transform.SetParent(idleContainer, false);
-                idleItems.Enqueue(enemy);
-            }
-
-            return idleItems.Count > 0;
+            OnReturn(item);
+            item.transform.SetParent(idleContainer, false);
+            idleItems.Enqueue(item);
+            liveItems.Remove(item);
         }
 
         public void ForceReset()
         {
             foreach (var item in liveItems)
             {
+                OnReturn(item);
                 item.transform.SetParent(idleContainer, false);
                 idleItems.Enqueue(item);
             }
 
             liveItems.Clear();
+        }
+
+        protected virtual void OnRequest(T item) { }
+        protected virtual void OnReturn(T item) { }
+
+        private void Initialize()
+        {
+            Expand(initialSize);
+        }
+
+        private bool Expand(int amount)
+        {
+            for (var i = 0; i < amount; i++)
+            {
+                var item = Instantiate(prefab, idleContainer);
+                item.transform.SetParent(idleContainer, false);
+                item.gameObject.SetActive(false);
+                idleItems.Enqueue(item);
+            }
+
+            return idleItems.Count > 0;
         }
     }
 }
