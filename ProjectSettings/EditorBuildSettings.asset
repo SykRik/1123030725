@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Complete-Game/_Complete-Game.unity
+    guid: 874e24e631d7345b0a29cc297bedb405
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ffa34c5abac66254692f6e0074415000, type: 3}
   m_UseUCBPForAssetBundles: 0
