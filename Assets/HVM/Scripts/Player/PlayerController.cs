@@ -28,6 +28,12 @@ namespace HVM
 
         #endregion
 
+        #region ===== Enums =====
+
+        public enum ShootingMode { Single, Shotgun }
+
+        #endregion
+
         #region ===== Serialized Fields =====
 
         [Header("Health")]
@@ -47,6 +53,11 @@ namespace HVM
         [SerializeField] private int damagePerShot = 20;
         [SerializeField] private float timeBetweenBullets = 0.15f;
         [SerializeField] private float shotRange = 100f;
+        [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
+        [SerializeField] private float shotgunAngle = 60f;
+        [SerializeField] private float shotgunRadius = 6f;
+        [SerializeField] private float knockbackForce = 5f;
+        [SerializeField] private int shotgunRayCount = 5;
 
         [Header("Shooting FX")]
         [SerializeField] private GameObject shootingEffectObject;
@@ -212,7 +223,17 @@ namespace HVM
             if (Time.timeScale <= 0f || Time.time < lastShotTime + timeBetweenBullets) return;
 
             lastShotTime = Time.time;
-            PerformRaycast();
+
+            switch (shootingMode)
+            {
+                case ShootingMode.Single:
+                    PerformRaycast();
+                    break;
+                case ShootingMode.Shotgun:
+                    PerformShotgunBlast();
+                    break;
+            }
+
             PlayMuzzleEffects();
             DisableEffects(timeBetweenBullets * 0.2f);
         }
@@ -233,6 +254,45 @@ namespace HVM
             }
         }
 
+        private void PerformShotgunBlast()
+        {
+            Vector3 origin = shootingEffectObject.transform.position;
+            Vector3 forward = transform.forward;
+
+            Collider[] hits = Physics.OverlapSphere(origin, shotgunRadius, shootableMask);
+            foreach (var col in hits)
+            {
+                if (col.TryGetComponent<EnemyController>(out var enemy))
+                {
+                    Vector3 dirToEnemy = (enemy.transform.position - origin).normalized;
+                    float angle = Vector3.Angle(forward, dirToEnemy);
+
+                    if (angle <= shotgunAngle / 2f)
+                    {
+                        enemy.TakeDamage(damagePerShot, enemy.transform.position);
+
+                        if (enemy.TryGetComponent<Rigidbody>(out var rb))
+                        {
+                            rb.AddForce(dirToEnemy * knockbackForce, ForceMode.Impulse);
+                        }
+                    }
+                }
+            }
+
+            if (gunLine != null)
+            {
+                gunLine.positionCount = shotgunRayCount * 2;
+                for (int i = 0; i < shotgunRayCount; i++)
+                {
+                    float angleOffset = Mathf.Lerp(-shotgunAngle / 2f, shotgunAngle / 2f, i / (float)(shotgunRayCount - 1));
+                    Vector3 dir = Quaternion.Euler(0f, angleOffset, 0f) * forward;
+                    gunLine.SetPosition(i * 2, origin);
+                    gunLine.SetPosition(i * 2 + 1, origin + dir * shotgunRadius);
+                }
+                gunLine.enabled = true;
+            }
+        }
+
         private void TryDealDamage(RaycastHit hit)
         {
             if (hit.collider.TryGetComponent<EnemyController>(out var enemy))
@@ -242,7 +302,10 @@ namespace HVM
         private void SetLineEnd(Vector3 endPoint)
         {
             if (gunLine != null)
+            {
+                gunLine.positionCount = 2;
                 gunLine.SetPosition(1, endPoint);
+            }
         }
 
         private void PlayMuzzleEffects()
