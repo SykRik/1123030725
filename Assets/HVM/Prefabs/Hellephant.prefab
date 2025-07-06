@@ -9974,7 +9974,6 @@ GameObject:
   - component: {fileID: 9583922}
   - component: {fileID: 5499234}
   - component: {fileID: 8279214}
-  - component: {fileID: 19546556}
   - component: {fileID: 13536644}
   - component: {fileID: 13644992}
   - component: {fileID: 6348949121281377397}
@@ -10037,8 +10036,8 @@ Rigidbody:
   m_GameObject: {fileID: 153412}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: Infinity
-  m_AngularDrag: Infinity
+  m_Drag: 0
+  m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -10152,28 +10151,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!195 &19546556
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153412}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1.2
-  m_Speed: 2
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!135 &13536644
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10237,6 +10214,9 @@ MonoBehaviour:
   timeBetweenAttacks: 0.5
   attackDamage: 10
   hitPoint: {fileID: 8483075231504173464}
+  knockbackDuration: 0.5
+  randomForceMagnitude: 10
+  randomForceInterval: 1
   hitParticles: {fileID: 19897060}
 --- !u!198 &2604193621427391324
 ParticleSystem:
