@@ -51,7 +51,9 @@ namespace HVM
 
         [Header("Shooting")]
         [SerializeField] private int damagePerShot = 20;
-        [SerializeField] private float timeBetweenBullets = 0.15f;
+        [SerializeField] private float singleBurstDuration = 0.5f;
+        [SerializeField] private float shotgunBurstDuration = 0.5f;
+        [SerializeField] private float timeBetweenBursts = 0.25f;
         [SerializeField] private float shotRange = 100f;
         [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
         [SerializeField] private float shotgunAngle = 60f;
@@ -75,6 +77,8 @@ namespace HVM
         private bool isDead;
         private bool isDamaged;
         private float lastShotTime;
+        private bool isFiring;
+        private Coroutine firingRoutine;
 
         private Vector2 moveInput;
         private Ray shootRay;
@@ -111,7 +115,11 @@ namespace HVM
         private void Update()
         {
             HandleDamageFlash();
-            HandleShooting();
+
+            if (!isFiring)
+            {
+                firingRoutine = StartCoroutine(FireRoutine());
+            }
         }
 
         private void FixedUpdate()
@@ -218,24 +226,34 @@ namespace HVM
 
         #region ===== Shooting =====
 
-        private void HandleShooting()
+        private IEnumerator FireRoutine()
         {
-            if (Time.timeScale <= 0f || Time.time < lastShotTime + timeBetweenBullets) return;
+            isFiring = true;
 
-            lastShotTime = Time.time;
-
-            switch (shootingMode)
+            if (shootingMode == ShootingMode.Single)
             {
-                case ShootingMode.Single:
+                for (int i = 0; i < 5; i++)
+                {
                     PerformRaycast();
-                    break;
-                case ShootingMode.Shotgun:
+                    PlayMuzzleEffects();
+                    DisableEffects(singleBurstDuration * 0.1f);
+                    yield return new WaitForSeconds(singleBurstDuration / 5f);
+                }
+                yield return new WaitForSeconds(0.25f);
+            }
+            else if (shootingMode == ShootingMode.Shotgun)
+            {
+                for (int i = 0; i < 2; i++)
+                {
                     PerformShotgunBlast();
-                    break;
+                    PlayMuzzleEffects();
+                    DisableEffects(shotgunBurstDuration * 0.1f);
+                    yield return new WaitForSeconds(shotgunBurstDuration / 2f);
+                }
+                yield return new WaitForSeconds(0.5f);
             }
 
-            PlayMuzzleEffects();
-            DisableEffects(timeBetweenBullets * 0.2f);
+            isFiring = false;
         }
 
         private void PerformRaycast()
