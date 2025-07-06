@@ -105,5 +105,10 @@ namespace HVM
             // After 2 seconds destory the enemy.
             Destroy (gameObject, 2f);
         }
+
+        public void ResetHealth()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

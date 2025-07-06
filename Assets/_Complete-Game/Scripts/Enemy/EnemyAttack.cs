@@ -82,5 +82,10 @@ namespace HVM
 				playerHealth.TakeDamage(attackDamage);
 			}
 		}
+
+		public void ResetAttack()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

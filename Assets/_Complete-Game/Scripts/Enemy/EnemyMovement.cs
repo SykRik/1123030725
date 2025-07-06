@@ -36,5 +36,10 @@ namespace HVM
                 nav.enabled = false;
             }
         }
+
+        public void ResetMovement()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

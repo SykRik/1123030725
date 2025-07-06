@@ -119,9 +119,9 @@ namespace HVM
 
 		private void TryDealDamage(RaycastHit hit)
 		{
-			if (hit.collider.TryGetComponent<EnemyHealth>(out var enemyHealth))
+			if (hit.collider.TryGetComponent<EnemyController>(out var enemy))
 			{
-				enemyHealth.TakeDamage(damagePerShot, hit.point);
+				enemy.TakeDamage(damagePerShot, hit.point);
 			}
 		}
 
