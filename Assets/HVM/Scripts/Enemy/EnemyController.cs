@@ -9,60 +9,73 @@ namespace HVM
 	[RequireComponent(typeof(CapsuleCollider))]
 	[RequireComponent(typeof(ParticleSystem))]
 	[RequireComponent(typeof(NavMeshAgent))]
-	[RequireComponent(typeof(Rigidbody))]
 	public class EnemyController : MonoBehaviour, IObjectID
 	{
 		public static int Count = 0;
-		public        int ID { get; private set; }
+		public int ID { get; private set; }
+		public int CurrentHealth => currentHealth;
+		public EnemyManager.TypeOfEnemy Type { get; set; }
 
-		public event Action             OnDeath;
-		public int                      CurrentHealth => currentHealth;
-		public EnemyManager.TypeOfEnemy Type          { get; set; }
+		public event Action OnDeath;
 
-		[Header("Health")] [SerializeField] private int       startingHealth = 100;
-		[SerializeField]                    private float     sinkSpeed      = 2.5f;
-		[SerializeField]                    private int       scoreValue     = 10;
-		[SerializeField]                    private AudioClip deathClip;
+		#region === Serialized ===
 
-		[Header("Attack")] [SerializeField] private float timeBetweenAttacks = 0.5f;
-		[SerializeField]                    private int   attackDamage       = 10;
+		[Header("Health")]
+		[SerializeField] private int startingHealth = 100;
+		[SerializeField] private float sinkSpeed = 2.5f;
+		[SerializeField] private int scoreValue = 10;
+		[SerializeField] private AudioClip deathClip;
 
-		[Header("Knockback")] [SerializeField] private float knockbackDuration   = 0.4f;
-		[SerializeField]                       private float knockbackResistance = 1f;
+		[Header("Attack")]
+		[SerializeField] private float timeBetweenAttacks = 0.5f;
+		[SerializeField] private int attackDamage = 10;
 
-		private int   currentHealth;
+		[Header("Knockback")]
+		[SerializeField] private float knockbackDuration = 0.4f;
+		[SerializeField] private float knockbackResistance = 1f;
+
+		#endregion
+
+		#region === Private Fields ===
+
+		private int currentHealth;
 		private float attackTimer;
-		private bool  isDead;
-		private bool  isSinking;
-		private bool  playerInRange;
-		private bool  isKnockedBack;
 		private float knockbackTimer;
 
-		private Animator        animator;
-		private AudioSource     audioSource;
-		private CapsuleCollider capsuleCollider;
-		private Rigidbody       rb;
-		private NavMeshAgent    agent;
-		private ParticleSystem  hitParticles;
+		private bool isDead;
+		private bool isSinking;
+		private bool isKnockedBack;
+		private bool playerInRange;
 
-		private Transform        player;
+		private Animator animator;
+		private AudioSource audioSource;
+		private CapsuleCollider capsuleCollider;
+		private Rigidbody rb;
+		private NavMeshAgent agent;
+		private ParticleSystem hitParticles;
+
+		private Transform player;
 		private PlayerController playerController;
+
+		#endregion
+
+		#region === Unity Methods ===
 
 		private void Awake()
 		{
 			ID = ++Count;
 
-			animator        = GetComponent<Animator>();
-			audioSource     = GetComponent<AudioSource>();
+			animator = GetComponent<Animator>();
+			audioSource = GetComponent<AudioSource>();
 			capsuleCollider = GetComponent<CapsuleCollider>();
-			rb              = GetComponent<Rigidbody>();
-			agent           = GetComponent<NavMeshAgent>();
-			hitParticles    = GetComponentInChildren<ParticleSystem>();
+			rb = GetComponent<Rigidbody>();
+			agent = GetComponent<NavMeshAgent>();
+			hitParticles = GetComponentInChildren<ParticleSystem>();
 
-			GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+			var playerObj = GameObject.FindGameObjectWithTag("Player");
 			if (playerObj)
 			{
-				player           = playerObj.transform;
+				player = playerObj.transform;
 				playerController = playerObj.GetComponent<PlayerController>();
 			}
 
@@ -90,25 +103,25 @@ namespace HVM
 				knockbackTimer -= Time.deltaTime;
 				if (knockbackTimer <= 0f)
 				{
-					isKnockedBack     = false;
-					rb.linearVelocity = Vector3.zero;
-					agent.enabled     = true;
+					isKnockedBack = false;
+					rb.velocity = Vector3.zero;
+					agent.enabled = true;
 				}
-
 				return;
 			}
 
-			if (playerController != null && playerController.CurrentHealth > 0)
+			if (playerController?.CurrentHealth > 0)
 			{
 				if (!agent.enabled) agent.enabled = true;
 				agent.SetDestination(player.position);
 			}
-			else
+			else if (agent.enabled)
 			{
-				if (agent.enabled) agent.enabled = false;
+				agent.enabled = false;
 			}
 
 			attackTimer += Time.deltaTime;
+
 			if (attackTimer >= timeBetweenAttacks && playerInRange && playerController.CurrentHealth > 0)
 			{
 				Attack();
@@ -120,12 +133,16 @@ namespace HVM
 			}
 		}
 
+		#endregion
+
+		#region === Combat ===
+
 		private void Attack()
 		{
 			attackTimer = 0f;
 			animator.SetTrigger("Attack");
 
-			if (playerController.CurrentHealth > 0)
+			if (playerController != null)
 			{
 				playerController.TakeDamage(attackDamage);
 			}
@@ -133,14 +150,11 @@ namespace HVM
 
 		public void TakeDamage(int amount, Vector3 sourcePosition, float knockbackForce)
 		{
-			return;
 			if (isDead) return;
 
-			audioSource.Play();
 			currentHealth -= amount;
-
-			if (hitParticles != null)
-				hitParticles.Play();
+			audioSource.Play();
+			hitParticles?.Play();
 
 			if (currentHealth <= 0)
 			{
@@ -156,11 +170,11 @@ namespace HVM
 		{
 			if (isKnockedBack || agent == null) return;
 
-			isKnockedBack  = true;
+			isKnockedBack = true;
 			knockbackTimer = knockbackDuration;
 
-			agent.enabled     = false;
-			rb.linearVelocity = Vector3.zero;
+			agent.enabled = false;
+			rb.velocity = Vector3.zero;
 
 			Vector3 direction = (transform.position - sourcePosition).normalized;
 			direction.y = 0f;
@@ -170,10 +184,10 @@ namespace HVM
 
 		private void Die()
 		{
-			isDead                    = true;
+			isDead = true;
 			capsuleCollider.isTrigger = true;
-			agent.enabled             = false;
-			rb.isKinematic            = true;
+			agent.enabled = false;
+			rb.isKinematic = true;
 
 			animator.SetTrigger("Dead");
 
@@ -191,13 +205,11 @@ namespace HVM
 
 		private void StartSinking()
 		{
-			isSinking      = true;
+			isSinking = true;
 			rb.isKinematic = true;
-			agent.enabled  = false;
+			agent.enabled = false;
 
 			ScoreManager.score += scoreValue;
-
-			// Recycle sau 2 giây
 			Invoke(nameof(ReturnToPool), 2f);
 		}
 
@@ -206,27 +218,34 @@ namespace HVM
 			EnemyManager.Instance.ReturnEnemyToPool(this);
 		}
 
+		#endregion
+
+		#region === Reset ===
+
 		public void ResetState()
 		{
-			isDead         = false;
-			isSinking      = false;
-			isKnockedBack  = false;
+			isDead = false;
+			isSinking = false;
+			isKnockedBack = false;
 			knockbackTimer = 0f;
-			currentHealth  = startingHealth;
-			attackTimer    = 0f;
-			playerInRange  = false;
+			attackTimer = 0f;
+			currentHealth = startingHealth;
+			playerInRange = false;
 
 			gameObject.SetActive(true);
 			capsuleCollider.isTrigger = false;
-			rb.linearVelocity         = Vector3.zero;
-			rb.isKinematic            = false;
-			agent.velocity            = Vector3.zero;
-			agent.enabled             = true;
+			rb.velocity = Vector3.zero;
+			rb.isKinematic = false;
+
+			agent.velocity = Vector3.zero;
+			agent.enabled = true;
 
 			animator.ResetTrigger("Dead");
 			animator.ResetTrigger("PlayerDead");
 			animator.Play("Idle");
 		}
+
+		#endregion
 
 #if UNITY_EDITOR
 		[UnityEditor.InitializeOnEnterPlayMode]
