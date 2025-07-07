@@ -29,8 +29,8 @@ namespace HVM
 		[SerializeField] private PlayerController playerController;
 		
 		private LevelConfig[] levels = {
-			new LevelConfig { A = 30, B = 30, C = 0 },
-			new LevelConfig { A = 30, B = 29, C = 1 }
+			new LevelConfig { A = 20, B = 30, C = 0 },
+			new LevelConfig { A = 20, B = 29, C = 1 }
 		};
 
 		#region === Properties ===
