@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using UniRx;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
 
 namespace HVM
 {
@@ -23,6 +22,7 @@ namespace HVM
 		[SerializeField] private Text         notifyPopup;
 		[SerializeField] private Text         gameTime;
 		[SerializeField] private Text         gameScore;
+		[SerializeField] private Text         stageText;
 		[SerializeField] private CustomButton switchWeaponButton;
 
 		private IDisposable fadeDisposable;
@@ -30,79 +30,40 @@ namespace HVM
 		private void Start()
 		{
 			if (switchWeaponButton?.label != null)
-			{
 				switchWeaponButton.label.text = $"{(int)GameManager.Instance.PlayerController.CurrentWeapon}";
-			}
 
 			if (movementJoystick != null)
 			{
 				Observable.EveryUpdate()
 						.Select(_ => movementJoystick.Direction)
-						.Subscribe(direction => InputManager.Instance?.UpdateJoystick(direction))
+						.Subscribe(dir => InputManager.Instance?.UpdateJoystick(dir))
 						.AddTo(this);
 			}
 
 			Observable.EveryUpdate()
-					.Select(_ => GameManager.Instance)
-					.Where(gm => gm != null)
-					.Subscribe(gm =>
+					.Where(_ => GameManager.Instance != null)
+					.Subscribe(_ =>
 						{
-							float remaining = gm.RemainingTime;
-							int   minutes   = Mathf.FloorToInt(remaining / 60f);
-							int   seconds   = Mathf.FloorToInt(remaining % 60f);
+							var   gm     = GameManager.Instance;
+							float remain = gm.RemainingTime;
+							int   m      = Mathf.FloorToInt(remain / 60f);
+							int   s      = Mathf.FloorToInt(remain % 60f);
 
-							switch (gm.CurrentState)
+							gameTime.text = gm.CurrentState switch
 							{
-								case GameState.PreGame:
-									gameTime.text = $"Prepare: {minutes:00}:{seconds:00}";
-									break;
-								case GameState.Playing:
-									gameTime.text = $"Survive: {minutes:00}:{seconds:00}";
-									break;
-								case GameState.GameOver:
-									gameTime.text = $"Result: {minutes:00}:{seconds:00}";
-									break;
-								default:
-									gameTime.text = "--:--";
-									break;
-							}
+								GameState.PreGame  => $"Prepare: {m:00}:{s:00}",
+								GameState.Playing  => $"Survive: {m:00}:{s:00}",
+								GameState.GameOver => $"Result: {m:00}:{s:00}",
+								_                  => "--:--"
+							};
 
-							gameScore.text = $"Score: {gm.CurrentKill}/{gm.KillTarget}";
+							gameScore.text = $"{gm.CurrentKill}/{gm.KillTarget}";
+							stageText.text = $"STAGE {gm.CurrentLevel}";
 						})
 					.AddTo(this);
-		}
 
-		private void OnEnable()
-		{
 			switchWeaponButton?.button?.onClick.AddListener(HandleSwitchWeaponPressed);
-
-			var input = InputManager.Instance;
-			if (input != null)
-			{
-				input.OnPausePressed         += HandlePausePressed;
-				input.OnPauseReleased        += HandlePauseReleased;
-				input.OnSwitchWeaponPressed  += HandleSwitchWeaponPressed;
-				input.OnSwitchWeaponReleased += HandleSwitchWeaponReleased;
-			}
 		}
-
-		private void OnDisable()
-		{
-			switchWeaponButton?.button?.onClick.RemoveListener(HandleSwitchWeaponPressed);
-
-			var input = InputManager.Instance;
-			if (input != null)
-			{
-				input.OnPausePressed         -= HandlePausePressed;
-				input.OnPauseReleased        -= HandlePauseReleased;
-				input.OnSwitchWeaponPressed  -= HandleSwitchWeaponPressed;
-				input.OnSwitchWeaponReleased -= HandleSwitchWeaponReleased;
-			}
-		}
-
-		private void HandlePausePressed()         => Debug.Log("Pause button pressed");
-		private void HandlePauseReleased()        => Debug.Log("Pause button released");
-		private void HandleSwitchWeaponReleased() => Debug.Log("Switch weapon released");
 
 		private void HandleSwitchWeaponPressed()
 		{
@@ -153,13 +114,13 @@ namespace HVM
 
 			fadeDisposable = Observable.EveryUpdate()
 									.Select(_ => Time.deltaTime / fadeDuration)
-									.Scan(0f, (acc, delta) => Mathf.Min(1f, acc + delta))
-									.Do(alpha =>
+									.Scan(0f, (acc, d) => Mathf.Min(1f, acc + d))
+									.Do(a =>
 										{
-											screenFader.color = new Color(0, 0, 0, alpha * 0.5f);
-											notifyPopup.color = new Color(1, 1, 1, alpha);
+											screenFader.color = new Color(0, 0, 0, a * 0.5f);
+											notifyPopup.color = new Color(1, 1, 1, a);
 										})
-									.TakeWhile(alpha => alpha < 1f)
+									.TakeWhile(a => a < 1f)
 									.Subscribe()
 									.AddTo(this);
 		}
@@ -171,13 +132,13 @@ namespace HVM
 
 			fadeDisposable = Observable.EveryUpdate()
 									.Select(_ => Time.deltaTime / fadeDuration)
-									.Scan(1f, (acc, delta) => Mathf.Max(0f, acc - delta))
-									.Do(alpha =>
+									.Scan(1f, (acc, d) => Mathf.Max(0f, acc - d))
+									.Do(a =>
 										{
-											screenFader.color = new Color(0, 0, 0, alpha * 0.5f);
-											notifyPopup.color = new Color(1, 1, 1, alpha);
+											screenFader.color = new Color(0, 0, 0, a * 0.5f);
+											notifyPopup.color = new Color(1, 1, 1, a);
 										})
-									.TakeWhile(alpha => alpha > 0f)
+									.TakeWhile(a => a > 0f)
 									.Finally(() =>
 										{
 											notifyPopup.gameObject.SetActive(false);

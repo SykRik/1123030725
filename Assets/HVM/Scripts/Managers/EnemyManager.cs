@@ -22,11 +22,11 @@ namespace HVM
 
         #region ===== Serialized Fields =====
 
-        [SerializeField] private PlayerController  playerController = null;
-        [SerializeField] private float             spawnInterval    = 3f;
-        [SerializeField] private List<EnemyPooler> poolers          = null;
-        [SerializeField] private EnemySpawner      spawner          = null;
-        [SerializeField] private EnemyTracking     tracker          = null;
+        [SerializeField] private PlayerController playerController = null;
+        [SerializeField] private float spawnInterval = 1.5f;
+        [SerializeField] private List<EnemyPooler> poolers = null;
+        [SerializeField] private EnemySpawner spawner = null;
+        [SerializeField] private EnemyTracking tracker = null;
 
         #endregion
 
@@ -34,6 +34,7 @@ namespace HVM
 
         private float spawnTimer = 0f;
         private bool isRunning = false;
+        private Queue<TypeOfEnemy> spawnQueue = new();
 
         #endregion
 
@@ -66,15 +67,20 @@ namespace HVM
 
         private void Update()
         {
-            if (!isRunning || playerController.CurrentHealth <= 0f)
-                return;
-
-            spawnTimer -= Time.deltaTime;
-
-            if (spawnTimer <= 0f)
+            Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + spawnQueue.Count);
+            if (isRunning && playerController.CurrentHealth > 0f)
             {
+                spawnTimer -= Time.deltaTime;
+
+                if (spawnTimer > 0f) 
+                    return;
+                
                 spawnTimer = spawnInterval;
-                SpawnEnemy(TypeOfEnemy.A); // 🔁 Future: support more types
+
+                if (spawnQueue.Count > 0)
+                {
+                    SpawnEnemy(spawnQueue.Dequeue());
+                }
             }
         }
 
@@ -82,10 +88,11 @@ namespace HVM
 
         #region ===== Public Methods =====
 
-        public void StartSpawning()
+        public void StartSpawning(LevelConfig config)
         {
             isRunning = true;
             spawnTimer = spawnInterval;
+            EnqueueEnemies(config);
             Debug.Log("[EnemyManager] Spawning started.");
         }
 
@@ -112,61 +119,56 @@ namespace HVM
             TotalEnemiesKilled++;
         }
 
-        #endregion
-
-        #region ===== Private Methods =====
-
-        private void SpawnEnemy(TypeOfEnemy type)
+        public void ResetKillCount()
         {
-            foreach (var pooler in poolers)
-            {
-                if (pooler.Prefab.Type == type && pooler.TryRequest(out var enemy))
-                {
-                    spawner.Spawn(enemy);
-                    tracker.RegisterEnemy(enemy);
-
-                    Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
-                    return;
-                }
-            }
-
-            Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
+            TotalEnemiesKilled = 0;
         }
-        
+
         public void ReturnEnemyToPool(EnemyController enemy)
         {
-            if (enemy == null) 
-                return;
+            if (enemy == null) return;
 
             foreach (var pooler in poolers)
             {
                 if (pooler.Prefab.Type == enemy.Type)
                 {
                     pooler.Return(enemy);
-                    break;
+                    return;
                 }
             }
-            
+
             Debug.LogWarning($"[EnemyManager] Unknown enemy type to return: {enemy.name}");
         }
 
-
-        private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
-        {
-            enemyController = pooler.Enemies
-                .Where(x => x != null && x.CurrentHealth > 0 && Vector3.Distance(x.transform.position, position) < range)
-                .OrderBy(x => Vector3.Distance(x.transform.position, position))
-                .FirstOrDefault();
-
-            return enemyController != null;
-        }
-        
         public void ReturnAllAliveEnemiesToPool()
         {
             foreach (var pooler in poolers)
             {
                 ReturnAliveEnemiesInPool(pooler);
             }
+        }
+
+        #endregion
+
+        #region ===== Private Methods =====
+
+        private void SpawnEnemy(TypeOfEnemy type)
+        {
+            Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            foreach (var pooler in poolers)
+            {
+                Debug.Log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+                if (pooler.Prefab.Type == type && pooler.TryRequest(out var enemy))
+                {
+                    Debug.Log("ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+                    spawner.Spawn(enemy);
+                    tracker.RegisterEnemy(enemy);
+                    Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
+                    return;
+                }
+            }
+
+            Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
         }
 
         private void ReturnAliveEnemiesInPool(EnemyPooler pooler)
@@ -180,6 +182,25 @@ namespace HVM
                     ReturnEnemyToPool(enemy);
                 }
             }
+        }
+
+        private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
+        {
+            enemyController = pooler.Enemies
+                .Where(x => x != null && x.CurrentHealth > 0 && Vector3.Distance(x.transform.position, position) < range)
+                .OrderBy(x => Vector3.Distance(x.transform.position, position))
+                .FirstOrDefault();
+
+            return enemyController != null;
+        }
+
+        private void EnqueueEnemies(LevelConfig config)
+        {
+            spawnQueue.Clear();
+
+            for (var i = 0; i < config.A; i++) spawnQueue.Enqueue(TypeOfEnemy.A);
+            for (var i = 0; i < config.B; i++) spawnQueue.Enqueue(TypeOfEnemy.B);
+            for (var i = 0; i < config.C; i++) spawnQueue.Enqueue(TypeOfEnemy.C);
         }
 
         #endregion

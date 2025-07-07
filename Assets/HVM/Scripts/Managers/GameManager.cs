@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace HVM
 {
@@ -10,42 +11,49 @@ namespace HVM
 		GameOver
 	}
 
+	[Serializable]
+	public class LevelConfig
+	{
+		public int A;
+		public int B;
+		public int C;
+	}
+
 	public class GameManager : MonoSingleton<GameManager>
 	{
-		#region ===== Serialized Fields =====
+		[Header("Game Config")]
+		[SerializeField] private float preGameDuration = 10f;
+		[SerializeField] private float gameDuration = 150f;
+		[SerializeField] private float resultDuration = 10f;
+		[SerializeField] private LevelConfig[] levels = new LevelConfig[]
+		{
+			new LevelConfig { A = 30, B = 30, C = 0 },
+			new LevelConfig { A = 30, B = 29, C = 1 }
+		};
+		[SerializeField] private PlayerController playerController;
 
-		[Header("Game Config")] [SerializeField]
-		private float preGameDuration = 10f;
-
-		[SerializeField] private float gameDuration  = 180f;
-		[SerializeField] private int   winKillTarget = 50;
-
-		[Header("References")] [SerializeField]
-		private PlayerController playerController;
-
-		#endregion
-
-		#region ===== Properties =====
+		#region === Properties ===
 
 		public PlayerController PlayerController => playerController;
-		public float            RemainingTime    => Mathf.Max(0f, currentTime);
-		public GameState        CurrentState     => currentState;
-		public int              CurrentKill      => EnemyManager.Instance?.TotalEnemiesKilled ?? 0;
-		public int              KillTarget       => winKillTarget;
+		public float RemainingTime => Mathf.Max(0f, currentTime);
+		public GameState CurrentState => currentState;
+		public int CurrentKill => EnemyManager.Instance?.TotalEnemiesKilled ?? 0;
+		public int KillTarget => GetKillTargetForLevel(currentLevel);
+		public int CurrentLevel => currentLevel;
+		public int MaxLevel => levels?.Length ?? 0;
 
 		#endregion
 
-		#region ===== Runtime Fields =====
+		#region === Runtime ===
 
-		private GameState currentState     = GameState.Init;
-		private float     currentTime      = 0f;
-		private bool      isRunning        = false;
-		private int       lastCountdown    = -1;
-		private bool      justEnteredState = false;
+		private GameState currentState = GameState.Init;
+		private float currentTime = 0f;
+		private bool isRunning = false;
+		private int lastCountdown = -1;
+		private bool justEnteredState = false;
+		private int currentLevel = 0;
 
 		#endregion
-
-		#region ===== Unity Methods =====
 
 		private void Start()
 		{
@@ -66,37 +74,21 @@ namespace HVM
 
 			switch (currentState)
 			{
-				case GameState.PreGame:
-					UpdatePreGame();
-					break;
-
-				case GameState.Playing:
-					UpdatePlaying();
-					break;
-
-				case GameState.GameOver:
-					if (currentTime <= 0f)
-					{
-						ChangeState(GameState.PreGame);
-					}
-
-					break;
+				case GameState.PreGame: UpdatePreGame(); break;
+				case GameState.Playing: UpdatePlaying(); break;
+				case GameState.GameOver: UpdateResult(); break;
 			}
 		}
-
-		#endregion
-
-		#region ===== State Logic =====
 
 		private void ChangeState(GameState newState, bool isWin = false, string reason = "")
 		{
 			if (currentState == newState) return;
 
+			Debug.Log($"[GameManager] Changing state {currentState} → {newState}");
 			ExitState(currentState);
 			currentState = newState;
-			EnterState(newState, isWin, reason);
-
 			justEnteredState = true;
+			EnterState(newState, isWin, reason);
 		}
 
 		private void EnterState(GameState state, bool isWin = false, string reason = "")
@@ -104,26 +96,35 @@ namespace HVM
 			switch (state)
 			{
 				case GameState.PreGame:
-					Debug.Log("[GameManager] PreGame started. Prepare yourself...");
+					Debug.Log("[GameManager] PreGame started");
 					ResetPlayer();
-					currentTime   = preGameDuration;
+					EnemyManager.Instance?.ResetKillCount();
+					currentTime = preGameDuration;
 					lastCountdown = -1;
-					isRunning     = true;
+					isRunning = true;
 					break;
 
 				case GameState.Playing:
-					Debug.Log("[GameManager] Game Started!");
+					Debug.Log($"[GameManager] Game Started for level {currentLevel}");
 					currentTime = gameDuration;
-					EnemyManager.Instance.StartSpawning();
+					EnemyManager.Instance?.StartSpawning(GetLevelConfig());
 					break;
 
 				case GameState.GameOver:
 					Debug.Log($"[GameManager] Game Over - {(isWin ? "Victory" : "Defeat")} - {reason}");
-					currentTime = 10f;
-					isRunning   = true;
-					EnemyManager.Instance.StopSpawning();
-					EnemyManager.Instance.ReturnAllAliveEnemiesToPool();
+					currentTime = resultDuration;
+					isRunning = true;
+					EnemyManager.Instance?.StopSpawning();
+					EnemyManager.Instance?.ReturnAllAliveEnemiesToPool();
 					UIManager.Instance.ShowStatusMessage(isWin ? "Next Level" : "Game Over");
+
+					if (isWin)
+					{
+						if (currentLevel + 1 < MaxLevel)
+							currentLevel++;
+						else
+							currentLevel = 0;
+					}
 					break;
 			}
 		}
@@ -131,9 +132,7 @@ namespace HVM
 		private void ExitState(GameState state)
 		{
 			if (state == GameState.GameOver)
-			{
 				UIManager.Instance.HideStatusMessage();
-			}
 		}
 
 		private void UpdatePreGame()
@@ -149,9 +148,7 @@ namespace HVM
 			}
 
 			if (currentTime <= 0f)
-			{
 				ChangeState(GameState.Playing);
-			}
 		}
 
 		private void UpdatePlaying()
@@ -168,9 +165,17 @@ namespace HVM
 				return;
 			}
 
-			if (EnemyManager.Instance.TotalEnemiesKilled >= winKillTarget)
+			if (CurrentKill >= KillTarget)
 			{
-				ChangeState(GameState.GameOver, true, $"Kill Target Reached: {winKillTarget}");
+				ChangeState(GameState.GameOver, true, $"Kill Target Reached: {KillTarget}");
+			}
+		}
+
+		private void UpdateResult()
+		{
+			if (currentTime <= 0f)
+			{
+				ChangeState(GameState.PreGame);
 			}
 		}
 
@@ -182,6 +187,18 @@ namespace HVM
 			playerController.gameObject.SetActive(true);
 		}
 
-		#endregion
+		private LevelConfig GetLevelConfig()
+		{
+			return levels != null && currentLevel < levels.Length
+				? levels[currentLevel]
+				: new LevelConfig();
+		}
+
+		private int GetKillTargetForLevel(int index)
+		{
+			return levels != null && index < levels.Length
+				? levels[index].A + levels[index].B + levels[index].C
+				: 50;
+		}
 	}
 }

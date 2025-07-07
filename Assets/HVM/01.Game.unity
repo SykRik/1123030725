@@ -735,7 +735,9 @@ MonoBehaviour:
   screenFader: {fileID: 1334548032}
   movementJoystick: {fileID: 1176117740}
   notifyPopup: {fileID: 1125301619}
-  gameTime: {fileID: 0}
+  gameTime: {fileID: 966416709}
+  gameScore: {fileID: 1434159495}
+  stageText: {fileID: 307188208}
   switchWeaponButton:
     button: {fileID: 1629366417}
     label: {fileID: 684730617}
@@ -2244,7 +2246,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preGameDuration: 10
   gameDuration: 180
-  winKillTarget: 100
+  resultDuration: 10
+  levels: []
   playerController: {fileID: 2023876522}
 --- !u!4 &475585042
 Transform:
@@ -4919,7 +4922,6 @@ GameObject:
   - component: {fileID: 1434159494}
   - component: {fileID: 1434159496}
   - component: {fileID: 1434159495}
-  - component: {fileID: 1434159497}
   m_Layer: 5
   m_Name: ScoreText
   m_TagString: Untagged
@@ -4988,18 +4990,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434159493}
   m_CullTransparentMesh: 0
---- !u!114 &1434159497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1434159493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4f43bf66218c874d871d02802b6a2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1477044472
 GameObject:
   m_ObjectHideFlags: 0
