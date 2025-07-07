@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace HVM
 {
@@ -59,13 +57,16 @@ namespace HVM
 
         private void UpdateAttack()
         {
+            if (targetEnemy == null)
+                return;
+
             HandleDamageFlash();
 
-            if (!isFiring)
-            {
-                firingRoutine = StartCoroutine(FireRoutine());
-            }
+            if (isFiring) return;
+
+            firingRoutine = StartCoroutine(FireRoutine());
         }
+
 
         private void HandleDamageFlash()
         {
@@ -84,7 +85,7 @@ namespace HVM
             currentHealth -= damage;
             if (healthSlider != null) healthSlider.value = currentHealth;
 
-            UIManager.Instance?.FlashScreenDamage(0.4f); // <= Gọi fade
+            UIManager.Instance?.FlashScreenDamage(0.4f);
 
             if (currentHealth <= 0 && !isDead)
                 Die();

@@ -23,7 +23,7 @@ namespace HVM
         #region ===== Serialized Fields =====
 
         [SerializeField] private PlayerController playerController = null;
-        [SerializeField] private float spawnInterval = 1.2f;
+        [SerializeField] private float spawnInterval = 1f;
         [SerializeField] private List<EnemyPooler> poolers = null;
         [SerializeField] private EnemySpawner spawner = null;
         [SerializeField] private EnemyTracking tracker = null;

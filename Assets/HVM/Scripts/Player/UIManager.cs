@@ -59,7 +59,7 @@ namespace HVM
                             };
 
                             gameScore.text = $"SCORE {gm.CurrentKill}/{gm.KillTarget}";
-                            stageText.text = $"STAGE {gm.CurrentLevel}";
+                            stageText.text = $"STAGE {gm.CurrentLevel + 1}";
                         })
                     .AddTo(this);
 
