@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -6,19 +8,41 @@ namespace HVM
 {
     public partial class PlayerController
     {
-        [Header("Shooting")] 
-        [SerializeField] private int          damagePerShot        = 20;
-        [SerializeField] private float        singleBurstDuration  = 0.5f;
-        [SerializeField] private float        shotgunBurstDuration = 0.5f;
-        [SerializeField] private float        timeBetweenBursts    = 0.25f;
-        [SerializeField] private float        shotRange            = 100f;
-        [SerializeField] private TypeOfWeapon currentWeapon         = TypeOfWeapon.Rifle;
-        [SerializeField] private float        shotgunAngle         = 60f;
-        [SerializeField] private float        shotgunRadius        = 6f;
-        [SerializeField] private float        knockbackForce       = 5f;
-        [SerializeField] private int          shotgunRayCount      = 5;
+        [System.Serializable]
+        private class WeaponData
+        {
+            public int damage;
+            public float range;
+            public float knockbackForce;
 
-        [Header("Shooting FX")] 
+            public WeaponData(int damage, float range, float knockbackForce)
+            {
+                this.damage = damage;
+                this.range = range;
+                this.knockbackForce = knockbackForce;
+            }
+        }
+
+        private static readonly Dictionary<TypeOfWeapon, WeaponData> weaponDataMap = new()
+        {
+            { TypeOfWeapon.Rifle,   new WeaponData(15, 25f, 1f) },
+            { TypeOfWeapon.Shotgun, new WeaponData(25, 15f, 5f) }
+        };
+
+
+        [Header("Shooting")]
+        [SerializeField] private int damagePerShot = 20;
+        [SerializeField] private float singleBurstDuration = 0.5f;
+        [SerializeField] private float shotgunBurstDuration = 0.5f;
+        [SerializeField] private float timeBetweenBursts = 0.25f;
+        [SerializeField] private float shotRange = 100f;
+        [SerializeField] private TypeOfWeapon currentWeapon = TypeOfWeapon.Rifle;
+        [SerializeField] private float shotgunAngle = 60f;
+        [SerializeField] private float shotgunRadius = 6f;
+        [SerializeField] private float knockbackForce = 5f;
+        [SerializeField] private int shotgunRayCount = 5;
+
+        [Header("Shooting FX")]
         [SerializeField] private GameObject shootingEffectObject;
         [SerializeField] private ParticleSystem gunParticles;
         [SerializeField] private LineRenderer gunLine;
@@ -31,7 +55,6 @@ namespace HVM
         private bool isFiring;
         private Coroutine firingRoutine;
         private Coroutine disableEffectRoutine;
-
         public TypeOfWeapon CurrentWeapon => currentWeapon;
 
         private void UpdateAttack()
@@ -61,9 +84,12 @@ namespace HVM
             currentHealth -= damage;
             if (healthSlider != null) healthSlider.value = currentHealth;
 
+            UIManager.Instance?.FlashScreenDamage(0.4f); // <= Gọi fade
+
             if (currentHealth <= 0 && !isDead)
                 Die();
         }
+
 
         private IEnumerator FireRoutine()
         {
@@ -72,31 +98,31 @@ namespace HVM
             switch (currentWeapon)
             {
                 case TypeOfWeapon.Rifle:
-                {
-                    for (int i = 0; i < 5; i++)
                     {
-                        PerformRaycast();
-                        PlayMuzzleEffects();
-                        DisableEffects(singleBurstDuration * 0.1f);
-                        yield return new WaitForSeconds(singleBurstDuration / 5f);
-                    }
+                        for (int i = 0; i < 5; i++)
+                        {
+                            PerformRaycast();
+                            PlayMuzzleEffects();
+                            DisableEffects(singleBurstDuration * 0.1f);
+                            yield return new WaitForSeconds(singleBurstDuration / 5f);
+                        }
 
-                    yield return new WaitForSeconds(timeBetweenBursts);
-                    break;
-                }
+                        yield return new WaitForSeconds(timeBetweenBursts);
+                        break;
+                    }
                 case TypeOfWeapon.Shotgun:
-                {
-                    for (int i = 0; i < 2; i++)
                     {
-                        PerformShotgunBlast();
-                        PlayMuzzleEffects();
-                        DisableEffects(shotgunBurstDuration * 0.1f);
-                        yield return new WaitForSeconds(shotgunBurstDuration / 2f);
-                    }
+                        for (int i = 0; i < 2; i++)
+                        {
+                            PerformShotgunBlast();
+                            PlayMuzzleEffects();
+                            DisableEffects(shotgunBurstDuration * 0.1f);
+                            yield return new WaitForSeconds(shotgunBurstDuration / 2f);
+                        }
 
-                    yield return new WaitForSeconds(0.5f);
-                    break;
-                }
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
             }
 
             isFiring = false;
@@ -123,7 +149,7 @@ namespace HVM
             var origin = shootingEffectObject.transform.position;
             var forward = transform.forward;
             var hits = Physics.OverlapSphere(origin, shotgunRadius, shootableMask);
-            
+
             foreach (var hit in hits)
             {
                 if (hit.TryGetComponent<EnemyController>(out var enemy))
@@ -145,7 +171,7 @@ namespace HVM
                 {
                     var angleOffset = Mathf.Lerp(-shotgunAngle / 2f, shotgunAngle / 2f, i / (float)(shotgunRayCount - 1));
                     var direction = Quaternion.Euler(0f, angleOffset, 0f) * forward;
-                    
+
                     gunLine.SetPosition(i * 2, origin);
                     gunLine.SetPosition(i * 2 + 1, origin + direction * shotgunRadius);
                 }
@@ -174,7 +200,7 @@ namespace HVM
             if (gunLine != null) gunLine.enabled = true;
             if (gunLight != null) gunLight.enabled = true;
             if (faceLight != null) faceLight.enabled = true;
-            
+
             gunAudio?.Play();
             gunParticles?.Stop();
             gunParticles?.Play();
@@ -201,7 +227,7 @@ namespace HVM
 
         private void RestartCoroutine(ref Coroutine routine, IEnumerator coroutine)
         {
-            if (routine != null) 
+            if (routine != null)
                 StopCoroutine(routine);
             routine = StartCoroutine(coroutine);
         }
@@ -211,9 +237,26 @@ namespace HVM
             currentWeapon = currentWeapon switch
             {
                 TypeOfWeapon.Rifle => TypeOfWeapon.Shotgun,
-                _                  => TypeOfWeapon.Rifle
+                TypeOfWeapon.Shotgun => TypeOfWeapon.Rifle,
+                _ => TypeOfWeapon.Rifle
             };
+
+            ApplyWeaponData(currentWeapon);
             return currentWeapon;
         }
+
+        private void ApplyWeaponData(TypeOfWeapon weapon)
+        {
+            if (!weaponDataMap.TryGetValue(weapon, out var data))
+            {
+                Debug.LogWarning($"Weapon data not found for: {weapon}");
+                return;
+            }
+
+            damagePerShot = data.damage;
+            shotRange = data.range;
+            knockbackForce = data.knockbackForce;
+        }
+
     }
 }

@@ -37,6 +37,7 @@ namespace HVM
         {
             ID = ++Count;
             currentHealth = startingHealth;
+            ApplyWeaponData(currentWeapon);
         }
 
         private void Start()

@@ -10231,7 +10231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  startingHealth: 100
+  startingHealth: 300
   sinkSpeed: 2.5
   scoreValue: 10
   deathClip: {fileID: 0}

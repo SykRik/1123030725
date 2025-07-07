@@ -23,7 +23,7 @@ namespace HVM
         #region ===== Serialized Fields =====
 
         [SerializeField] private PlayerController playerController = null;
-        [SerializeField] private float spawnInterval = 1.5f;
+        [SerializeField] private float spawnInterval = 1.25f;
         [SerializeField] private List<EnemyPooler> poolers = null;
         [SerializeField] private EnemySpawner spawner = null;
         [SerializeField] private EnemyTracking tracker = null;
@@ -67,7 +67,6 @@ namespace HVM
 
         private void Update()
         {
-            Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + spawnQueue.Count);
             if (isRunning && playerController.CurrentHealth > 0f)
             {
                 spawnTimer -= Time.deltaTime;
@@ -154,13 +153,10 @@ namespace HVM
 
         private void SpawnEnemy(TypeOfEnemy type)
         {
-            Debug.Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             foreach (var pooler in poolers)
             {
-                Debug.Log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
                 if (pooler.Prefab.Type == type && pooler.TryRequest(out var enemy))
                 {
-                    Debug.Log("ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
                     spawner.Spawn(enemy);
                     tracker.RegisterEnemy(enemy);
                     Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
@@ -197,6 +193,8 @@ namespace HVM
         private void EnqueueEnemies(LevelConfig config)
         {
             spawnQueue.Clear();
+            if(config == null)
+                return;
 
             for (var i = 0; i < config.A; i++) spawnQueue.Enqueue(TypeOfEnemy.A);
             for (var i = 0; i < config.B; i++) spawnQueue.Enqueue(TypeOfEnemy.B);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace HVM
@@ -25,12 +26,12 @@ namespace HVM
 		[SerializeField] private float preGameDuration = 10f;
 		[SerializeField] private float gameDuration = 150f;
 		[SerializeField] private float resultDuration = 10f;
-		[SerializeField] private LevelConfig[] levels = new LevelConfig[]
-		{
+		[SerializeField] private PlayerController playerController;
+		
+		private LevelConfig[] levels = {
 			new LevelConfig { A = 30, B = 30, C = 0 },
 			new LevelConfig { A = 30, B = 29, C = 1 }
 		};
-		[SerializeField] private PlayerController playerController;
 
 		#region === Properties ===
 
@@ -38,7 +39,7 @@ namespace HVM
 		public float RemainingTime => Mathf.Max(0f, currentTime);
 		public GameState CurrentState => currentState;
 		public int CurrentKill => EnemyManager.Instance?.TotalEnemiesKilled ?? 0;
-		public int KillTarget => GetKillTargetForLevel(currentLevel);
+		public int KillTarget => TryGetLevelKillTarget(currentLevel, out var target) ? target : 0;
 		public int CurrentLevel => currentLevel;
 		public int MaxLevel => levels?.Length ?? 0;
 
@@ -107,7 +108,7 @@ namespace HVM
 				case GameState.Playing:
 					Debug.Log($"[GameManager] Game Started for level {currentLevel}");
 					currentTime = gameDuration;
-					EnemyManager.Instance?.StartSpawning(GetLevelConfig());
+					EnemyManager.Instance?.StartSpawning(TryGetLevelConfig(currentLevel, out var config) ? config : null);
 					break;
 
 				case GameState.GameOver:
@@ -187,18 +188,17 @@ namespace HVM
 			playerController.gameObject.SetActive(true);
 		}
 
-		private LevelConfig GetLevelConfig()
+		private bool TryGetLevelConfig(int index, out LevelConfig config)
 		{
-			return levels != null && currentLevel < levels.Length
-				? levels[currentLevel]
-				: new LevelConfig();
+			config = levels == null || levels.Length == 0 ? null : levels.Length > index ? levels[index] : levels.Last();
+
+			return config != null;
 		}
 
-		private int GetKillTargetForLevel(int index)
+		private bool TryGetLevelKillTarget(int index, out int amount)
 		{
-			return levels != null && index < levels.Length
-				? levels[index].A + levels[index].B + levels[index].C
-				: 50;
+			amount = TryGetLevelConfig(index, out var config) ? config.A + config.B  + config.C: 0;
+			return amount > 0;
 		}
 	}
 }
