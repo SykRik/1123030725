@@ -171,9 +171,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 2023876522}
   spawnInterval: 3
-  poolerA: {fileID: 231892399}
-  poolerB: {fileID: 1186317359}
-  poolerC: {fileID: 489153038}
+  poolers:
+  - {fileID: 231892399}
+  - {fileID: 1186317359}
+  - {fileID: 489153038}
   spawner: {fileID: 14871715}
   tracker: {fileID: 14871714}
 --- !u!114 &14871714
@@ -734,6 +735,7 @@ MonoBehaviour:
   screenFader: {fileID: 1334548032}
   movementJoystick: {fileID: 1176117740}
   notifyPopup: {fileID: 1125301619}
+  gameTime: {fileID: 0}
   switchWeaponButton:
     button: {fileID: 1629366417}
     label: {fileID: 684730617}
@@ -750,7 +752,7 @@ GameObject:
   - component: {fileID: 231892400}
   - component: {fileID: 231892399}
   m_Layer: 0
-  m_Name: PoolerA
+  m_Name: Pooler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1341,13 +1343,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 50
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Stage: 0'
+  m_Text: Stage
 --- !u!222 &307188209
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2270,7 +2272,7 @@ GameObject:
   - component: {fileID: 489153039}
   - component: {fileID: 489153038}
   m_Layer: 0
-  m_Name: PoolerC
+  m_Name: Pooler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2615,6 +2617,7 @@ RectTransform:
   - {fileID: 506286815}
   - {fileID: 1434159494}
   - {fileID: 307188206}
+  - {fileID: 966416708}
   - {fileID: 1125301621}
   - {fileID: 1394906874}
   - {fileID: 1629366416}
@@ -3438,6 +3441,85 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1595012894}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &966416707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 966416708}
+  - component: {fileID: 966416710}
+  - component: {fileID: 966416709}
+  m_Layer: 5
+  m_Name: StateText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &966416708
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 966416707}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 575757239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -300}
+  m_SizeDelta: {x: 200, y: 60}
+  m_Pivot: {x: 0, y: 0.5}
+--- !u!114 &966416709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 966416707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.784}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 46238fb1ad7a7a84ba8954c1c860994c, type: 3}
+    m_FontSize: 50
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 50
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: State
+--- !u!222 &966416710
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 966416707}
+  m_CullTransparentMesh: 0
 --- !u!1 &1038376789
 GameObject:
   m_ObjectHideFlags: 0
@@ -3992,7 +4074,7 @@ GameObject:
   - component: {fileID: 1186317360}
   - component: {fileID: 1186317359}
   m_Layer: 0
-  m_Name: PoolerB
+  m_Name: Pooler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4891,13 +4973,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 50
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Score: 0'
+  m_Text: Score
 --- !u!222 &1434159496
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -22,20 +22,11 @@ namespace HVM
 
         #region ===== Serialized Fields =====
 
-        [Header("Game References")]
-        [SerializeField] private PlayerController playerController;
-
-        [Header("Spawning Settings")]
-        [SerializeField] private float spawnInterval = 3f;
-
-        [Header("Enemy Poolers (By Type)")]
-        [SerializeField] private EnemyPooler poolerA;
-        [SerializeField] private EnemyPooler poolerB;
-        [SerializeField] private EnemyPooler poolerC;
-
-        [Header("Internal References")]
-        [SerializeField] private EnemySpawner spawner;
-        [SerializeField] private EnemyTracking tracker;
+        [SerializeField] private PlayerController  playerController = null;
+        [SerializeField] private float             spawnInterval    = 3f;
+        [SerializeField] private List<EnemyPooler> poolers          = null;
+        [SerializeField] private EnemySpawner      spawner          = null;
+        [SerializeField] private EnemyTracking     tracker          = null;
 
         #endregion
 
@@ -63,6 +54,14 @@ namespace HVM
             if (spawner == null || tracker == null)
                 Debug.LogError("[EnemyManager] Missing required internal references.", this);
 #endif
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            poolers ??= new();
+            poolers = poolers.OrderByDescending(pooler => pooler.Prefab.Type).ToList();
         }
 
         private void Update()
@@ -98,12 +97,11 @@ namespace HVM
 
         public bool TryGetClosedEnemy(Vector3 position, float range, out EnemyController enemyController)
         {
-            if (TryGetEnemyClosed(poolerA, position, range, out enemyController))
-                return true;
-            if (TryGetEnemyClosed(poolerB, position, range, out enemyController))
-                return true;
-            if (TryGetEnemyClosed(poolerC, position, range, out enemyController))
-                return true;
+            foreach (var pooler in poolers)
+            {
+                if (TryGetEnemyClosed(pooler, position, range, out enemyController))
+                    return true;
+            }
 
             enemyController = null;
             return false;
@@ -120,59 +118,38 @@ namespace HVM
 
         private void SpawnEnemy(TypeOfEnemy type)
         {
-            var pooler = GetPooler(type);
-
-            if (pooler == null)
+            foreach (var pooler in poolers)
             {
-                Debug.LogWarning($"[EnemyManager] No pooler assigned for type: {type}");
-                return;
+                if (pooler.Prefab.Type == type && pooler.TryRequest(out var enemy))
+                {
+                    spawner.Spawn(enemy);
+                    tracker.RegisterEnemy(enemy);
+
+                    Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
+                    return;
+                }
             }
 
-            if (!pooler.TryRequest(out var enemy))
-            {
-                Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
-                return;
-            }
-
-            enemy.Type = type;
-            spawner.Spawn(enemy);
-            tracker.RegisterEnemy(enemy);
-
-            Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
+            Debug.LogWarning($"[EnemyManager] Failed to get enemy from pool for type: {type}");
         }
         
         public void ReturnEnemyToPool(EnemyController enemy)
         {
-            if (enemy == null) return;
+            if (enemy == null) 
+                return;
 
-            switch (enemy.Type)
+            foreach (var pooler in poolers)
             {
-                case TypeOfEnemy.A:
-                    poolerA.Return(enemy);
+                if (pooler.Prefab.Type == enemy.Type)
+                {
+                    pooler.Return(enemy);
                     break;
-                case TypeOfEnemy.B:
-                    poolerB.Return(enemy);
-                    break;
-                case TypeOfEnemy.C:
-                    poolerC.Return(enemy);
-                    break;
-                default:
-                    Debug.LogWarning($"[EnemyManager] Unknown enemy type to return: {enemy.name}");
-                    break;
+                }
             }
+            
+            Debug.LogWarning($"[EnemyManager] Unknown enemy type to return: {enemy.name}");
         }
 
-
-        private EnemyPooler GetPooler(TypeOfEnemy type)
-        {
-            return type switch
-            {
-                TypeOfEnemy.A => poolerA,
-                TypeOfEnemy.B => poolerB,
-                TypeOfEnemy.C => poolerC,
-                _ => null,
-            };
-        }
 
         private bool TryGetEnemyClosed(EnemyPooler pooler, Vector3 position, float range, out EnemyController enemyController)
         {
@@ -186,9 +163,10 @@ namespace HVM
         
         public void ReturnAllAliveEnemiesToPool()
         {
-            ReturnAliveEnemiesInPool(poolerA);
-            ReturnAliveEnemiesInPool(poolerB);
-            ReturnAliveEnemiesInPool(poolerC);
+            foreach (var pooler in poolers)
+            {
+                ReturnAliveEnemiesInPool(pooler);
+            }
         }
 
         private void ReturnAliveEnemiesInPool(EnemyPooler pooler)

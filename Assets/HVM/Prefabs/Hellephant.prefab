@@ -10230,17 +10230,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9e265a510b54db489e8d9b92490d350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 2
   startingHealth: 100
   sinkSpeed: 2.5
   scoreValue: 10
   deathClip: {fileID: 0}
   timeBetweenAttacks: 0.5
   attackDamage: 10
-  hitPoint: {fileID: 8483075231504173464}
   knockbackDuration: 0.5
-  randomForceMagnitude: 10
-  randomForceInterval: 1
-  hitParticles: {fileID: 19897060}
+  knockbackResistance: 1
 --- !u!198 &2604193621427391324
 ParticleSystem:
   m_ObjectHideFlags: 0

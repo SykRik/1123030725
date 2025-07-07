@@ -11,14 +11,17 @@ namespace HVM
 	[RequireComponent(typeof(NavMeshAgent))]
 	public class EnemyController : MonoBehaviour, IObjectID
 	{
-		public static int Count = 0;
-		public int ID { get; private set; }
-		public int CurrentHealth => currentHealth;
-		public EnemyManager.TypeOfEnemy Type { get; set; }
+		public static int                      Count = 0;
+		public        int                      ID            { get; private set; }
+		public        int                      CurrentHealth => currentHealth;
+		public        EnemyManager.TypeOfEnemy Type          => type;
 
 		public event Action OnDeath;
 
 		#region === Serialized ===
+		
+		[Header("General")]
+		[SerializeField] private EnemyManager.TypeOfEnemy type = EnemyManager.TypeOfEnemy.Undefine;
 
 		[Header("Health")]
 		[SerializeField] private int startingHealth = 100;
@@ -104,7 +107,7 @@ namespace HVM
 				if (knockbackTimer <= 0f)
 				{
 					isKnockedBack = false;
-					rb.velocity = Vector3.zero;
+					rb.linearVelocity = Vector3.zero;
 					agent.enabled = true;
 				}
 				return;
@@ -174,7 +177,7 @@ namespace HVM
 			knockbackTimer = knockbackDuration;
 
 			agent.enabled = false;
-			rb.velocity = Vector3.zero;
+			rb.linearVelocity = Vector3.zero;
 
 			Vector3 direction = (transform.position - sourcePosition).normalized;
 			direction.y = 0f;
@@ -209,7 +212,6 @@ namespace HVM
 			rb.isKinematic = true;
 			agent.enabled = false;
 
-			ScoreManager.score += scoreValue;
 			Invoke(nameof(ReturnToPool), 2f);
 		}
 
@@ -234,7 +236,7 @@ namespace HVM
 
 			gameObject.SetActive(true);
 			capsuleCollider.isTrigger = false;
-			rb.velocity = Vector3.zero;
+			rb.linearVelocity = Vector3.zero;
 			rb.isKinematic = false;
 
 			agent.velocity = Vector3.zero;

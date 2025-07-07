@@ -28,6 +28,10 @@ namespace HVM
 		#region ===== Properties =====
 
 		public PlayerController PlayerController => playerController;
+		public float            RemainingTime    => Mathf.Max(0f, currentTime);
+		public GameState        CurrentState     => currentState;
+		public int              CurrentKill      => EnemyManager.Instance?.TotalEnemiesKilled ?? 0;
+		public int              KillTarget       => winKillTarget;
 
 		#endregion
 
@@ -69,6 +73,14 @@ namespace HVM
 				case GameState.Playing:
 					UpdatePlaying();
 					break;
+
+				case GameState.GameOver:
+					if (currentTime <= 0f)
+					{
+						ChangeState(GameState.PreGame);
+					}
+
+					break;
 			}
 		}
 
@@ -107,32 +119,21 @@ namespace HVM
 
 				case GameState.GameOver:
 					Debug.Log($"[GameManager] Game Over - {(isWin ? "Victory" : "Defeat")} - {reason}");
-					isRunning = false;
-
+					currentTime = 10f;
+					isRunning   = true;
 					EnemyManager.Instance.StopSpawning();
 					EnemyManager.Instance.ReturnAllAliveEnemiesToPool();
-
 					UIManager.Instance.ShowStatusMessage(isWin ? "Next Level" : "Game Over");
-
-					// 🔁 Đợi 10s rồi quay về PreGame
-					Invoke(nameof(RestartToPreGame), 10f);
 					break;
 			}
 		}
 
 		private void ExitState(GameState state)
 		{
-			switch (state)
+			if (state == GameState.GameOver)
 			{
-				case GameState.GameOver:
-					UIManager.Instance.HideStatusMessage(); // ✅ Clear UI khi rời khỏi GameOver
-					break;
+				UIManager.Instance.HideStatusMessage();
 			}
-		}
-
-		private void RestartToPreGame()
-		{
-			ChangeState(GameState.PreGame);
 		}
 
 		private void UpdatePreGame()
@@ -175,11 +176,9 @@ namespace HVM
 
 		private void ResetPlayer()
 		{
-			if (playerController == null)
-				return;
-
+			if (playerController == null) return;
 			playerController.ResetState();
-			playerController.transform.position = Vector3.zero; // hoặc vị trí spawn gốc
+			playerController.transform.position = Vector3.zero;
 			playerController.gameObject.SetActive(true);
 		}
 

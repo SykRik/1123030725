@@ -12,6 +12,8 @@ namespace HVM
 
         protected readonly Queue<T> idleItems = new();
         protected readonly List<T> liveItems = new();
+        
+        public T Prefab => prefab;
 
         private void Awake()
         {
