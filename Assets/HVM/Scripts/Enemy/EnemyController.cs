@@ -93,7 +93,7 @@ namespace HVM
                 if (knockbackTimer <= 0f)
                 {
                     isKnockedBack = false;
-                    rb.linearVelocity = Vector3.zero;
+                    rb.velocity = Vector3.zero;
                     agent.enabled = true;
                 }
                 return;
@@ -160,7 +160,7 @@ namespace HVM
             knockbackTimer = knockbackDuration;
 
             agent.enabled = false;
-            rb.linearVelocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
 
             Vector3 direction = (transform.position - sourcePosition).normalized;
             direction.y = 0f;
@@ -211,7 +211,9 @@ namespace HVM
 
             gameObject.SetActive(true);
             capsuleCollider.isTrigger = false;
+            rb.linearVelocity = Vector3.zero;
             rb.isKinematic = false;
+            agent.velocity = Vector3.zero;
             agent.enabled = true;
 
             animator.ResetTrigger("Dead");
