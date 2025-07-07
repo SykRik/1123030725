@@ -2,16 +2,36 @@
 
 public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    public static T Instance { get; private set; }
+	private static T _instance;
 
-    protected virtual void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+	public static T Instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = FindObjectOfType<T>();
+				if (_instance == null)
+				{
+					Debug.LogError($"[MonoSingleton] Instance of {typeof(T)} not found in the scene.");
+				}
+			}
 
-        Instance = this as T;
-    }
+			return _instance;
+		}
+		private set => _instance = value;
+	}
+
+	protected virtual void Awake()
+	{
+		if (_instance != null && _instance != this)
+		{
+			Debug.LogWarning($"[MonoSingleton] Duplicate {typeof(T)} found. Destroying this one: {name}");
+			Destroy(gameObject);
+			return;
+		}
+
+		_instance = this as T;
+		DontDestroyOnLoad(gameObject);
+	}
 }

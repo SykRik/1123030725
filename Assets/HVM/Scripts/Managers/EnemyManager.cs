@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HVM
@@ -95,11 +96,6 @@ namespace HVM
             Debug.Log("[EnemyManager] Spawning stopped.");
         }
 
-        public bool AreAllEnemiesDefeated()
-        {
-            return tracker.AllEnemiesDefeated;
-        }
-
         public bool TryGetClosedEnemy(Vector3 position, float range, out EnemyController enemyController)
         {
             if (TryGetEnemyClosed(poolerA, position, range, out enemyController))
@@ -138,11 +134,34 @@ namespace HVM
                 return;
             }
 
+            enemy.Type = type;
             spawner.Spawn(enemy);
             tracker.RegisterEnemy(enemy);
 
             Debug.Log($"[EnemyManager] Spawned enemy of type: {type}");
         }
+        
+        public void ReturnEnemyToPool(EnemyController enemy)
+        {
+            if (enemy == null) return;
+
+            switch (enemy.Type)
+            {
+                case TypeOfEnemy.A:
+                    poolerA.Return(enemy);
+                    break;
+                case TypeOfEnemy.B:
+                    poolerB.Return(enemy);
+                    break;
+                case TypeOfEnemy.C:
+                    poolerC.Return(enemy);
+                    break;
+                default:
+                    Debug.LogWarning($"[EnemyManager] Unknown enemy type to return: {enemy.name}");
+                    break;
+            }
+        }
+
 
         private EnemyPooler GetPooler(TypeOfEnemy type)
         {
@@ -163,6 +182,26 @@ namespace HVM
                 .FirstOrDefault();
 
             return enemyController != null;
+        }
+        
+        public void ReturnAllAliveEnemiesToPool()
+        {
+            ReturnAliveEnemiesInPool(poolerA);
+            ReturnAliveEnemiesInPool(poolerB);
+            ReturnAliveEnemiesInPool(poolerC);
+        }
+
+        private void ReturnAliveEnemiesInPool(EnemyPooler pooler)
+        {
+            var queueEnemy = new Queue<EnemyController>(pooler.Enemies);
+            while (queueEnemy.Count > 0)
+            {
+                var enemy = queueEnemy.Dequeue();
+                if (enemy != null && enemy.CurrentHealth > 0)
+                {
+                    ReturnEnemyToPool(enemy);
+                }
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace HVM
 {
@@ -6,12 +7,13 @@ namespace HVM
     {
         [Header("Movement")] 
         [SerializeField] private float moveSpeed = 6f;
-        [SerializeField] private float targetRange = 10f;
-        [SerializeField] private float rotateSpeed = 720f;
+        [SerializeField] private float targetRange  = 10f;
+        [SerializeField] private float rotateSpeed  = 720f;
+        [SerializeField] private float moveDistance = 2f;
 
-        private Vector2 moveInput;
-        private Rigidbody playerRB;
-        private Animator animator;
+        private Vector2         moveInput;
+        private NavMeshAgent    agent;
+        private Animator        animator;
         private EnemyController targetEnemy = null;
 
         private void UpdateMovement()
@@ -32,23 +34,48 @@ namespace HVM
         private void HandleMovement()
         {
             moveInput = InputManager.Instance.MoveInput;
-            var direction = moveInput.ToVector3XZ().normalized;
-            var position = transform.position + direction * moveSpeed * Time.fixedDeltaTime;
-            playerRB.MovePosition(position);
+
+            if (moveInput.sqrMagnitude < Mathf.Epsilon)
+            {
+                if (agent.hasPath || agent.velocity.sqrMagnitude > Mathf.Epsilon)
+                {
+                    agent.ResetPath();
+                    agent.velocity = Vector3.zero; // <- dừng ngay
+                }
+                return;
+            }
+
+            Vector3 moveDir    = moveInput.ToVector3XZ().normalized;
+            Vector3 desiredPos = transform.position + moveDir * moveDistance;
+
+            if (NavMesh.SamplePosition(desiredPos, out var hit, 1f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+            }
         }
+
 
         private void HandleRotation()
         {
-            var direction = targetEnemy == null
-                ? moveInput.ToVector3XZ()
-                : (targetEnemy.transform.position - transform.position).ToVector3XZ();
+            Vector3? lookDirection = null;
 
-            if (direction.sqrMagnitude > Mathf.Epsilon)
+            if (targetEnemy != null)
             {
-                var originRot = playerRB.rotation;
-                var targetRot = Quaternion.LookRotation(direction);
-                var smoothRot = Quaternion.RotateTowards(originRot, targetRot, rotateSpeed * Time.fixedDeltaTime);
-                playerRB.MoveRotation(smoothRot);
+                Vector3 dirToEnemy = (targetEnemy.transform.position - transform.position).ToVector3XZ();
+                if (dirToEnemy.sqrMagnitude > Mathf.Epsilon)
+                    lookDirection = dirToEnemy;
+            }
+            else if (agent.velocity.sqrMagnitude > Mathf.Epsilon)
+            {
+                lookDirection = agent.velocity.normalized;
+            }
+
+            if (lookDirection.HasValue)
+            {
+                Quaternion currentRot = transform.rotation;
+                Quaternion targetRot  = Quaternion.LookRotation(lookDirection.Value);
+                Quaternion smoothRot  = Quaternion.RotateTowards(currentRot, targetRot, rotateSpeed * Time.deltaTime);
+                transform.rotation = smoothRot;
             }
         }
 

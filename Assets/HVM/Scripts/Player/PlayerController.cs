@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace HVM
 {
@@ -14,7 +15,11 @@ namespace HVM
         public int ID { get; private set; }
         public int CurrentHealth => currentHealth;
 
-        public enum ShootingMode { Single, Shotgun }
+        public enum TypeOfWeapon
+        {
+            Rifle = 1,
+            Shotgun = 2
+        }
 
         [Header("Health")]
         [SerializeField] private int startingHealth = 100;
@@ -37,8 +42,9 @@ namespace HVM
         private void Start()
         {
             shootableMask = LayerMask.GetMask("Shootable");
-            playerRB = GetComponent<Rigidbody>();
+            GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
+            agent    = GetComponent<NavMeshAgent>();
             
             if (shootingEffectObject != null)
             {
@@ -75,5 +81,15 @@ namespace HVM
 
             enabled = false;
         }
+
+        public void ResetState()
+        {
+            enabled = true;
+            isDead        = false;
+            currentHealth = startingHealth;
+            GetComponent<Animator>()?.SetTrigger("Revive");
+            GetComponent<NavMeshAgent>().enabled = true;
+        }
+
     }
 }

@@ -317,7 +317,7 @@ namespace UnuGames
 			dict.Add ("Boolean", "bool");
 			dict.Add ("Int32", "int");
 			dict.Add ("Int64", "long");
-			dict.Add ("Single", "float");
+			dict.Add ("Rifle", "float");
 			dict.Add ("Double", "double");
 
 			if (dict.ContainsKey (type.Name))
@@ -336,7 +336,7 @@ namespace UnuGames
 			int : System.Int32
 			long : System.Int64
 			sbyte : System.SByte
-			float : System.Single
+			float : System.Rifle
 			ushort : System.UInt16
 			uint : System.UInt32
 			ulong : System.UInt64

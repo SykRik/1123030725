@@ -14,23 +14,30 @@ namespace HVM
 	{
 		#region ===== Serialized Fields =====
 
-		[Header("Game Config")]
-		[SerializeField] private float preGameDuration = 10f;
-		[SerializeField] private float gameDuration = 180f;
-		[SerializeField] private int winKillTarget = 50;
+		[Header("Game Config")] [SerializeField]
+		private float preGameDuration = 10f;
 
-		[Header("References")]
-		[SerializeField] private PlayerController playerController;
+		[SerializeField] private float gameDuration  = 180f;
+		[SerializeField] private int   winKillTarget = 50;
+
+		[Header("References")] [SerializeField]
+		private PlayerController playerController;
+
+		#endregion
+
+		#region ===== Properties =====
+
+		public PlayerController PlayerController => playerController;
 
 		#endregion
 
 		#region ===== Runtime Fields =====
 
-		private GameState currentState = GameState.Init;
-		private float currentTime = 0f;
-		private bool isRunning = false;
-		private int lastCountdown = -1;
-		private bool justEnteredState = false;
+		private GameState currentState     = GameState.Init;
+		private float     currentTime      = 0f;
+		private bool      isRunning        = false;
+		private int       lastCountdown    = -1;
+		private bool      justEnteredState = false;
 
 		#endregion
 
@@ -86,9 +93,10 @@ namespace HVM
 			{
 				case GameState.PreGame:
 					Debug.Log("[GameManager] PreGame started. Prepare yourself...");
-					currentTime = preGameDuration;
+					ResetPlayer();
+					currentTime   = preGameDuration;
 					lastCountdown = -1;
-					isRunning = true;
+					isRunning     = true;
 					break;
 
 				case GameState.Playing:
@@ -100,14 +108,31 @@ namespace HVM
 				case GameState.GameOver:
 					Debug.Log($"[GameManager] Game Over - {(isWin ? "Victory" : "Defeat")} - {reason}");
 					isRunning = false;
+
 					EnemyManager.Instance.StopSpawning();
+					EnemyManager.Instance.ReturnAllAliveEnemiesToPool();
+
+					UIManager.Instance.ShowStatusMessage(isWin ? "Next Level" : "Game Over");
+
+					// 🔁 Đợi 10s rồi quay về PreGame
+					Invoke(nameof(RestartToPreGame), 10f);
 					break;
 			}
 		}
 
 		private void ExitState(GameState state)
 		{
-			// Reserved for fade out, reset, etc.
+			switch (state)
+			{
+				case GameState.GameOver:
+					UIManager.Instance.HideStatusMessage(); // ✅ Clear UI khi rời khỏi GameOver
+					break;
+			}
+		}
+
+		private void RestartToPreGame()
+		{
+			ChangeState(GameState.PreGame);
 		}
 
 		private void UpdatePreGame()
@@ -146,6 +171,16 @@ namespace HVM
 			{
 				ChangeState(GameState.GameOver, true, $"Kill Target Reached: {winKillTarget}");
 			}
+		}
+
+		private void ResetPlayer()
+		{
+			if (playerController == null)
+				return;
+
+			playerController.ResetState();
+			playerController.transform.position = Vector3.zero; // hoặc vị trí spawn gốc
+			playerController.gameObject.SetActive(true);
 		}
 
 		#endregion

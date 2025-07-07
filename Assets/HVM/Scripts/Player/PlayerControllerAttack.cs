@@ -1,21 +1,22 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HVM
 {
     public partial class PlayerController
     {
         [Header("Shooting")] 
-        [SerializeField] private int damagePerShot = 20;
-        [SerializeField] private float singleBurstDuration = 0.5f;
-        [SerializeField] private float shotgunBurstDuration = 0.5f;
-        [SerializeField] private float timeBetweenBursts = 0.25f;
-        [SerializeField] private float shotRange = 100f;
-        [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
-        [SerializeField] private float shotgunAngle = 60f;
-        [SerializeField] private float shotgunRadius = 6f;
-        [SerializeField] private float knockbackForce = 5f;
-        [SerializeField] private int shotgunRayCount = 5;
+        [SerializeField] private int          damagePerShot        = 20;
+        [SerializeField] private float        singleBurstDuration  = 0.5f;
+        [SerializeField] private float        shotgunBurstDuration = 0.5f;
+        [SerializeField] private float        timeBetweenBursts    = 0.25f;
+        [SerializeField] private float        shotRange            = 100f;
+        [SerializeField] private TypeOfWeapon currentWeapon         = TypeOfWeapon.Rifle;
+        [SerializeField] private float        shotgunAngle         = 60f;
+        [SerializeField] private float        shotgunRadius        = 6f;
+        [SerializeField] private float        knockbackForce       = 5f;
+        [SerializeField] private int          shotgunRayCount      = 5;
 
         [Header("Shooting FX")] 
         [SerializeField] private GameObject shootingEffectObject;
@@ -30,6 +31,8 @@ namespace HVM
         private bool isFiring;
         private Coroutine firingRoutine;
         private Coroutine disableEffectRoutine;
+
+        public TypeOfWeapon CurrentWeapon => currentWeapon;
 
         private void UpdateAttack()
         {
@@ -66,9 +69,9 @@ namespace HVM
         {
             isFiring = true;
 
-            switch (shootingMode)
+            switch (currentWeapon)
             {
-                case ShootingMode.Single:
+                case TypeOfWeapon.Rifle:
                 {
                     for (int i = 0; i < 5; i++)
                     {
@@ -81,7 +84,7 @@ namespace HVM
                     yield return new WaitForSeconds(timeBetweenBursts);
                     break;
                 }
-                case ShootingMode.Shotgun:
+                case TypeOfWeapon.Shotgun:
                 {
                     for (int i = 0; i < 2; i++)
                     {
@@ -201,6 +204,16 @@ namespace HVM
             if (routine != null) 
                 StopCoroutine(routine);
             routine = StartCoroutine(coroutine);
+        }
+
+        public TypeOfWeapon SwitchWeapon()
+        {
+            currentWeapon = currentWeapon switch
+            {
+                TypeOfWeapon.Rifle => TypeOfWeapon.Shotgun,
+                _                  => TypeOfWeapon.Rifle
+            };
+            return currentWeapon;
         }
     }
 }
